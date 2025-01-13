@@ -108,7 +108,7 @@ public class ChessPiece {
             int row = vert + myPosition.getRow();
             for(int horiz : path){
                 int col = horiz + myPosition.getColumn();
-                if((col >= 1 && col <= 8 && row >= 1 && row <= 8) && (Math.abs(vert)!= Math.abs(horiz))){
+                if((Math.abs(vert)!= Math.abs(horiz)) && (col >= 1 && col <= 8 && row >= 1 && row <= 8)){
                     ChessPosition qPosition = new ChessPosition(row, col);
                     ChessPiece checkPosition= board.getPiece(qPosition);
                     if (checkPosition == null || checkPosition.getTeamColor() != piece.getTeamColor()) {
