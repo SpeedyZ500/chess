@@ -43,14 +43,15 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        int row = position.getRow() - 1;
-        int col = position.getColumn() - 1;
-        if(row > 7 || col > 7 ||row < 0 || col < 0){
+        if(outOfBounds(position)){
             throw new InvalidPositionException("Chess Piece out of bounds");
         }
-        this.board[row][col] = piece;
+        this.board[position.getRow() - 1][position.getColumn() - 1] = piece;
     }
 
+    public boolean outOfBounds(ChessPosition position){
+        return position.getRow() < 1 || position.getRow() > 8 || position.getColumn() < 1 || position.getColumn() > 8;
+    }
     /**
      * Gets a chess piece on the chessboard
      *
@@ -59,12 +60,10 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        int row = position.getRow() - 1;
-        int col = position.getColumn() - 1;
-        if(row > 7 || col > 7 ||row < 0 || col < 0){
+        if(outOfBounds(position)){
             throw new InvalidPositionException("Chess Piece out of bounds");
         }
-        return board[row][col];
+        return this.board[position.getRow() - 1][position.getColumn() - 1];
     }
 
     /**
