@@ -134,15 +134,32 @@ public class ChessPiece {
                 }
 
                 break;
-            case ROOK:
+            case ROOK, QUEEN:
 
-                    break;
-            case QUEEN:
-
-                    break;
+                if (piece.getPieceType() == PieceType.ROOK){ break;}
             case BISHOP:
 
-                    break;
+                for(int i = -1; i <= 1; i += 2){
+                    qRow = row;
+                    qCol = col;
+                    for(int j = -1; j <= 1; j += 2){
+                        qRow = row + i;
+                        qCol = col + j;
+                        while(qRow >= 1 && qRow <= 8 && qCol >= 1 && qCol <= 8 ) {
+                            qPosition = new ChessPosition(qRow, qCol);
+                            checkPosition = board.getPiece(qPosition);
+                            if(checkPosition == null){moves.add(new ChessMove(myPosition, qPosition, null));}
+                            else if(checkPosition.getTeamColor() != piece.getTeamColor()){
+                                moves.add(new ChessMove(myPosition, qPosition, null));
+                                break;
+                            }
+                            else{break;}
+                            qRow += i;
+                            qCol += j;
+                        }
+                    }
+                }
+                break;
             case KNIGHT:
                     int[] path =  {1, 2};
                     for(int i = 1; i <= 2; i++){
