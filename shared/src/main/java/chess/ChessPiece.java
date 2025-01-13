@@ -110,9 +110,9 @@ public class ChessPiece {
                 int col = horiz + myPosition.getColumn();
                 ChessPosition pos = new ChessPosition(row, col);
                 if((Math.abs(vert)!= Math.abs(horiz)) && !board.outOfBounds(pos)){
-                    ChessPiece checkPosition= board.getPiece(position);
+                    ChessPiece checkPosition= board.getPiece(pos);
                     if (checkPosition == null || checkPosition.getTeamColor() != piece.getTeamColor()) {
-                        moves.add(new ChessMove(myPosition, position, null));
+                        moves.add(new ChessMove(myPosition, pos, null));
                     }
                 }
             }
