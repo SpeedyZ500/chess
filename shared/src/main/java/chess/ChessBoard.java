@@ -73,29 +73,31 @@ public class ChessBoard {
      */
     public void resetBoard() {
         for(int i = 1; i <= 8; i++){
-            ChessGame.TeamColor color = switch(i){
-                case 1,2 -> ChessGame.TeamColor.WHITE;
-                case 7,8 -> ChessGame.TeamColor.BLACK;
+            switch(i){
+                case 1 -> resetBack(ChessGame.TeamColor.WHITE, i);
+                case 2 -> resetPawns(ChessGame.TeamColor.WHITE, i);
+                case 7 -> resetPawns(ChessGame.TeamColor.BLACK, i);
+                case 8 -> resetBack(ChessGame.TeamColor.BLACK, i);
+            };
+        }
+    }
+
+    private void resetPawns(ChessGame.TeamColor color, int row){
+        for(int i = 1; i <= 8; i++){
+            addPiece(new ChessPosition(row, i), new ChessPiece(color, ChessPiece.PieceType.PAWN));
+        }
+    }
+    private void resetBack(ChessGame.TeamColor color, int row){
+        for(int i = 1; i <= 8; i++){
+            ChessPiece.PieceType type = switch (i) {
+                case 1, 8 -> ChessPiece.PieceType.ROOK;
+                case 2, 7 -> ChessPiece.PieceType.KNIGHT;
+                case 3, 6 -> ChessPiece.PieceType.BISHOP;
+                case 4 -> ChessPiece.PieceType.QUEEN;
+                case 5 -> ChessPiece.PieceType.KING;
                 default -> null;
             };
-            for(int j = 1; j <= 8; j++) {
-                if(color != null){
-                    ChessPiece.PieceType type = switch (i) {
-                        case 2, 7 -> ChessPiece.PieceType.PAWN;
-                        default -> switch (j) {
-                            case 1, 8 -> ChessPiece.PieceType.ROOK;
-                            case 2, 7 -> ChessPiece.PieceType.KNIGHT;
-                            case 3, 6 -> ChessPiece.PieceType.BISHOP;
-                            case 4 -> ChessPiece.PieceType.QUEEN;
-                            case 5 -> ChessPiece.PieceType.KING;
-                            default -> null;
-                        };
-                    };
-                    addPiece(new ChessPosition(i, j), new ChessPiece(color, type));
-                }else{
-                    addPiece(new ChessPosition(i, j), null);
-                }
-            }
+            addPiece(new ChessPosition(row, i), new ChessPiece(color, type));
         }
     }
 }

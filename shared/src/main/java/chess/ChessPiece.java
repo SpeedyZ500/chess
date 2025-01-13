@@ -110,14 +110,12 @@ public class ChessPiece {
 
     private Collection<ChessMove> knightMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
         List<ChessMove> moves = new ArrayList<>();
-
         int[] path =  {-2, -1, 1, 2};
-
         for(int vert : path){
             int row = vert + myPosition.getRow();
             for(int horiz : path){
                 int col = horiz + myPosition.getColumn();
-                if(row >= 1 && row <= 8 && col >= 1 && col <= 8 && (Math.abs(vert)!= Math.abs(horiz))){
+                if((row >= 1 && row <= 8 && col >= 1 && col <= 8) && (Math.abs(vert)!= Math.abs(horiz))){
                     ChessPosition qPosition = new ChessPosition(row, col);
                     ChessPiece checkPosition= board.getPiece(qPosition);
                     if (checkPosition == null || checkPosition.getTeamColor() != piece.getTeamColor()) {
@@ -157,7 +155,7 @@ public class ChessPiece {
     private Collection<ChessMove> pawnPromotion(ChessPosition startPosition, ChessPosition endPosition){
         List<ChessMove> moves = new ArrayList<>();
         PieceType[] promotions = {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT};
-        for(var promotion : promotions) moves.add(new ChessMove(startPosition, endPosition, promotion));
+        for(var promotion : promotions) {moves.add(new ChessMove(startPosition, endPosition, promotion));}
         return moves;
     }
     private Collection<ChessMove> pawnForward(ChessBoard board, ChessPosition myPosition, int direction, boolean start){
@@ -187,7 +185,7 @@ public class ChessPiece {
         int row = myPosition.getRow() + direction;
         for(int i = -1; i <= 1; i += 2){
             int col = myPosition.getColumn() + i;
-            if(row >= 1 && row <= 8 && col >= 1 && col <= 8){
+            if(row >= 1 && col >= 1 && row <= 8 && col <= 8){
                 ChessPosition qPosition = new ChessPosition(row, col);
                 ChessPiece checkPosition = board.getPiece(qPosition);
                 if(checkPosition != null && checkPosition.getTeamColor() != piece.getTeamColor()){
@@ -202,7 +200,7 @@ public class ChessPiece {
         }
         return moves;
     }
-    private Collection<ChessMove> enPassant(ChessBoard board, ChessPosition myPosition, int direction, ChessPiece piece){
+    /*private Collection<ChessMove> enPassant(ChessBoard board, ChessPosition myPosition, int direction, ChessPiece piece){
         List<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow() + direction;
         for(int i = -1; i <= 1; i += 2){
@@ -216,7 +214,7 @@ public class ChessPiece {
             }
         }
         return moves;
-    }
+    }*/
     private Collection<ChessMove> rookMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
         List<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
