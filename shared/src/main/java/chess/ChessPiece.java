@@ -135,7 +135,32 @@ public class ChessPiece {
 
                 break;
             case ROOK, QUEEN:
-
+                for(int i = -1; i <= 1; i += 2){
+                    qRow = row + i;
+                    qCol = col + i;
+                    while(qRow >= 1 && qRow <= 8){
+                        qPosition = new ChessPosition(qRow, col);
+                        checkPosition = board.getPiece(qPosition);
+                        if(checkPosition == null){moves.add(new ChessMove(myPosition, qPosition, null));}
+                        else if(checkPosition.getTeamColor() != piece.getTeamColor()){
+                            moves.add(new ChessMove(myPosition, qPosition, null));
+                            break;
+                        }
+                        else{break;}
+                        qRow += i;
+                    }
+                    while(qCol >= 1 && qCol <= 8){
+                        qPosition = new ChessPosition(row, qCol);
+                        checkPosition = board.getPiece(qPosition);
+                        if(checkPosition == null){moves.add(new ChessMove(myPosition, qPosition, null));}
+                        else if(checkPosition.getTeamColor() != piece.getTeamColor()){
+                            moves.add(new ChessMove(myPosition, qPosition, null));
+                            break;
+                        }
+                        else{break;}
+                        qCol += i;
+                    }
+                }
                 if (piece.getPieceType() == PieceType.ROOK){ break;}
             case BISHOP:
 
