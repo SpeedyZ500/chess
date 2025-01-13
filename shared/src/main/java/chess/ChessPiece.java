@@ -76,8 +76,18 @@ public class ChessPiece {
         int col = myPosition.getColumn();
         switch (piece.getPieceType()){
             case KING:
-
-                    break;
+                for(int i = -1; i <= 1; i++){
+                    for(int j = -1; j <= 1; j++){
+                        qRow = row + i;
+                        qCol = col + j;
+                        if(qRow >= 1 && qRow <= 8 && qCol >= 1 && qCol <= 8){
+                            qPosition = new ChessPosition(qRow, qCol);
+                            checkPosition = board.getPiece(qPosition);
+                            if(checkPosition == null || checkPosition.getTeamColor() != piece.getTeamColor()){moves.add(new ChessMove(myPosition, qPosition, null));}
+                        }
+                    }
+                }
+                break;
             case PAWN:
                 int direction = 0;
                 boolean start = false;
@@ -195,8 +205,7 @@ public class ChessPiece {
                                 if(!(qRow < 1 || qCol < 1 || qRow > 8 || qCol > 8)){
                                     qPosition = new ChessPosition(qRow, qCol);
                                     checkPosition= board.getPiece(qPosition);
-                                    if (checkPosition == null) {moves.add(new ChessMove(myPosition, qPosition, null));}
-                                    else if (checkPosition.getTeamColor() != piece.getTeamColor()) {moves.add(new ChessMove(myPosition, qPosition, null));}
+                                    if (checkPosition == null || checkPosition.getTeamColor() != piece.getTeamColor()) {moves.add(new ChessMove(myPosition, qPosition, null));}
                                 }
                             }
                         }
