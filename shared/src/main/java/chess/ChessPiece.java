@@ -108,8 +108,8 @@ public class ChessPiece {
             int row = vert + myPosition.getRow();
             for(int horiz : path){
                 int col = horiz + myPosition.getColumn();
-                ChessPosition position = new ChessPosition(row, col);
-                if((Math.abs(vert)!= Math.abs(horiz)) && !board.outOfBounds(position)){
+                ChessPosition pos = new ChessPosition(row, col);
+                if((Math.abs(vert)!= Math.abs(horiz)) && !board.outOfBounds(pos)){
                     ChessPiece checkPosition= board.getPiece(position);
                     if (checkPosition == null || checkPosition.getTeamColor() != piece.getTeamColor()) {
                         moves.add(new ChessMove(myPosition, position, null));
