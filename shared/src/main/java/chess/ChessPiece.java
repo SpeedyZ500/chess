@@ -1,7 +1,6 @@
 package chess;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents a single chess piece
@@ -66,22 +65,57 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        switch (type){
-            case KING ->
-                    throw new RuntimeException("Not implemented");
-            case PAWN ->
-                    throw new RuntimeException("Not implemented");
-            case ROOK ->
-                    throw new RuntimeException("Not implemented");
-            case QUEEN ->
-                    throw new RuntimeException("Not implemented");
-            case BISHOP ->
-                    throw new RuntimeException("Not implemented");
-            case KNIGHT ->
-                    throw new RuntimeException("Not implemented");
-            case null, default ->
-                    throw new RuntimeException("Unexpected Piece Type");
+        ChessPiece piece = board.getPiece(myPosition);
+        List<ChessMove> moves = new ArrayList<>();
+
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        switch (piece.getPieceType()){
+            case KING:
+
+                    break;
+            case PAWN:
+                int direction = switch(piece.getTeamColor()){
+                        case BLACK -> -1;
+                        case WHITE -> 1;
+                        default -> 0;
+                    };
+                break;
+            case ROOK:
+
+                    break;
+            case QUEEN:
+
+                    break;
+            case BISHOP:
+
+                    break;
+            case KNIGHT:
+                    int[] path =  {1, 2};
+                    for(int i = 1; i <= 2; i++){
+                        for(int j = -1; j <= 1; j += 2){
+                            for(int k = -1; k <= 1; k += 2){
+                                int qRow = row + (path[i%2] * j);
+                                int qCol = col + (path[(i+1)%2] * k);
+                                if(!(qRow < 1 || qCol < 1 || qRow > 8 || qCol > 8)){
+                                    ChessPosition qPosition = new ChessPosition(qRow, qCol);
+                                    ChessPiece checkPosition= board.getPiece(qPosition);
+                                    if (checkPosition == null) {
+                                        moves.add(new ChessMove(myPosition, qPosition, null));
+                                    } else if (checkPosition.getTeamColor() != piece.getTeamColor()) {
+                                        moves.add(new ChessMove(myPosition, qPosition, null));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+            default:
+
+                    break;
         }
+        return moves;
         //throw new RuntimeException("Not implemented");
     }
 }
