@@ -1,6 +1,7 @@
 package chess;
 
 import chess.pieces.KingMovesCalculator;
+import chess.pieces.PawnMovesCalculator;
 
 import java.util.*;
 
@@ -71,7 +72,7 @@ public class ChessPiece {
         List<ChessMove> moves = new ArrayList<>();
         switch (piece.getPieceType()){
             case KING -> moves.addAll(new KingMovesCalculator().pieceMoves(board, myPosition));
-            case PAWN -> moves.addAll(this.pawnMoves(board, myPosition, piece));
+            case PAWN -> moves.addAll(new PawnMovesCalculator().pieceMoves(board, myPosition));
             case ROOK -> moves.addAll(this.rookMoves(board, myPosition, piece));
             case BISHOP -> moves.addAll(this.bishopMoves(board,myPosition, piece));
             case KNIGHT -> moves.addAll(this.knightMoves(board, myPosition, piece));
@@ -106,79 +107,7 @@ public class ChessPiece {
         return moves;
     }
 
-    private Collection<ChessMove> pawnMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
-        List<ChessMove> moves = new ArrayList<>();
-        int direction = 0;
-        boolean start = false;
-        //int enPassantRow = 0;
-        switch(piece.getTeamColor()){
-            case BLACK:
-                direction = -1;
-                start = (myPosition.getRow() == 7);
-                //enPassantRow = 4;
-                break;
-            case WHITE:
-                direction = 1;
-                start = (myPosition.getRow() == 2);
-                //enPassantRow = 5;
-                break;
-            default:
-                break;
-        };
-        moves.addAll(pawnForward(board, myPosition, direction, start));
-        moves.addAll(pawnCapture(board, myPosition, direction, piece));
-
-        return moves;
-    }
-
-    private Collection<ChessMove> pawnPromotion(ChessPosition startPosition, ChessPosition endPosition){
-        List<ChessMove> moves = new ArrayList<>();
-        PieceType[] promotions = {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT};
-        for(var promotion : promotions) {moves.add(new ChessMove(startPosition, endPosition, promotion));}
-        return moves;
-    }
-    private Collection<ChessMove> pawnForward(ChessBoard board, ChessPosition myPosition, int direction, boolean start){
-        List<ChessMove> moves = new ArrayList<>();
-        int row = myPosition.getRow() + direction;
-        int col = myPosition.getColumn();
-        ChessPosition position = new ChessPosition(row, col);
-        if(!board.outOfBounds(position)){
-            ChessPiece checkPosition = board.getPiece(position);
-            if(checkPosition == null){
-                if (row == 8 || row == 1){
-                    moves.addAll(this.pawnPromotion(myPosition,position));
-                }
-                else{
-                    moves.add(new ChessMove(myPosition, position, null));
-                    if (start){
-                        moves.addAll(this.pawnForward(board, myPosition, direction + direction, false));
-                    }
-                }
-            }
-
-        }
-        return moves;
-    }
-    private Collection<ChessMove> pawnCapture(ChessBoard board, ChessPosition myPosition, int direction, ChessPiece piece){
-        List<ChessMove> moves = new ArrayList<>();
-        int row = myPosition.getRow() + direction;
-        for(int i = -1; i <= 1; i += 2){
-            int col = myPosition.getColumn() + i;
-            ChessPosition position = new ChessPosition(row, col);
-            if(!board.outOfBounds(position)){
-                ChessPiece checkPosition = board.getPiece(position);
-                if(checkPosition != null && checkPosition.getTeamColor() != piece.getTeamColor()){
-                    if (row == 8 || row == 1){
-                        moves.addAll(this.pawnPromotion(myPosition,position));
-                    }
-                    else {
-                        moves.add(new ChessMove(myPosition, position, null));
-                    }
-                }
-            }
-        }
-        return moves;
-    }
+    
 
     private Collection<ChessMove> rookMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
         List<ChessMove> moves = new ArrayList<>();
