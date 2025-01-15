@@ -1,8 +1,6 @@
 package chess;
 
-import chess.pieces.KingMovesCalculator;
-import chess.pieces.PawnMovesCalculator;
-import chess.pieces.RookMovesCalculator;
+import chess.pieces.*;
 
 import java.util.*;
 
@@ -75,106 +73,13 @@ public class ChessPiece {
             case KING -> moves.addAll(new KingMovesCalculator().pieceMoves(board, myPosition));
             case PAWN -> moves.addAll(new PawnMovesCalculator().pieceMoves(board, myPosition));
             case ROOK -> moves.addAll(new RookMovesCalculator().pieceMoves(board, myPosition));
-            case BISHOP -> moves.addAll(this.bishopMoves(board,myPosition, piece));
-            case KNIGHT -> moves.addAll(this.knightMoves(board, myPosition, piece));
-            case QUEEN -> {
-                moves.addAll(this.bishopMoves(board,myPosition, piece));
-                moves.addAll(this.rookMoves(board, myPosition, piece));
-            }
+            case BISHOP -> moves.addAll(new BishopMovesCalculator().pieceMoves(board, myPosition));
+            case KNIGHT -> moves.addAll(new KnightMovesCalculator().pieceMoves(board, myPosition));
+            case QUEEN -> moves.addAll(new QueenMovesCalculator().pieceMoves(board, myPosition));
 
         }
         return moves;
         //throw new RuntimeException("Not implemented");
     }
-
-
-
-    private Collection<ChessMove> knightMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
-        List<ChessMove> moves = new ArrayList<>();
-        int[] path =  {-2, -1, 1, 2};
-        for(int vert : path){
-            int row = vert + myPosition.getRow();
-            for(int horiz : path){
-                int col = horiz + myPosition.getColumn();
-                ChessPosition pos = new ChessPosition(row, col);
-                if((Math.abs(vert)!= Math.abs(horiz)) && !board.outOfBounds(pos)){
-                    ChessPiece checkPosition= board.getPiece(pos);
-                    if (checkPosition == null || checkPosition.getTeamColor() != piece.getTeamColor()) {
-                        moves.add(new ChessMove(myPosition, pos, null));
-                    }
-                }
-            }
-        }
-        return moves;
-    }
-
-
-
-    private Collection<ChessMove> rookMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
-        List<ChessMove> moves = new ArrayList<>();
-        int row = myPosition.getRow();
-        int col = myPosition.getColumn();
-        for(int i = -1; i <= 1; i += 2){
-            int qRow = myPosition.getRow() + i;
-            int qCol = myPosition.getColumn() + i;
-            ChessPosition position = new ChessPosition(qRow, col);
-            while(!board.outOfBounds(position)){
-                ChessPiece checkPosition = board.getPiece(position);
-                if(checkPosition == null){moves.add(
-                        new ChessMove(myPosition, position, null));
-                }
-                else if(checkPosition.getTeamColor() != piece.getTeamColor()){
-                    moves.add(new ChessMove(myPosition, position, null));
-                    break;
-                }
-                else{
-                    break;
-                }
-                qRow += i;
-                position = new ChessPosition(qRow, col);
-            }
-            position = new ChessPosition(row, qCol);
-            while(!board.outOfBounds(position)){
-
-                ChessPiece checkPosition = board.getPiece(position);
-                if(checkPosition == null){
-                    moves.add(new ChessMove(myPosition, position, null));
-                }
-                else if(checkPosition.getTeamColor() != piece.getTeamColor()){
-                    moves.add(new ChessMove(myPosition, position, null));
-                    break;
-                }
-                else{
-                    break;
-                }
-                qCol += i;
-                position = new ChessPosition(row, qCol);
-            }
-        }
-        return moves;
-    }
-    private Collection<ChessMove> bishopMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
-        List<ChessMove> moves = new ArrayList<>();
-        for(int i = -1; i <= 1; i += 2){
-            for(int j = -1; j <= 1; j += 2){
-                int row = myPosition.getRow() + i;
-                int col = myPosition.getColumn() + j;
-                ChessPosition position = new ChessPosition(row, col);
-                while(!board.outOfBounds(position)) {
-                    position = new ChessPosition(row, col);
-                    ChessPiece checkPosition = board.getPiece(position);
-                    if(checkPosition == null){moves.add(new ChessMove(myPosition, position, null));}
-                    else if(checkPosition.getTeamColor() != piece.getTeamColor()){
-                        moves.add(new ChessMove(myPosition, position, null));
-                        break;
-                    }
-                    else{break;}
-                    row += i;
-                    col += j;
-                    position = new ChessPosition(row, col);
-                }
-            }
-        }
-        return moves;
-    }
+    
 }
