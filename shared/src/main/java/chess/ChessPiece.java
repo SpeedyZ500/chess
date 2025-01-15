@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieces.KingMovesCalculator;
+
 import java.util.*;
 
 /**
@@ -68,7 +70,7 @@ public class ChessPiece {
         ChessPiece piece = board.getPiece(myPosition);
         List<ChessMove> moves = new ArrayList<>();
         switch (piece.getPieceType()){
-            case KING -> moves.addAll(this.kingMoves(board, myPosition, piece));
+            case KING -> moves.addAll(new KingMovesCalculator().pieceMoves(board, myPosition));
             case PAWN -> moves.addAll(this.pawnMoves(board, myPosition, piece));
             case ROOK -> moves.addAll(this.rookMoves(board, myPosition, piece));
             case BISHOP -> moves.addAll(this.bishopMoves(board,myPosition, piece));
@@ -83,23 +85,7 @@ public class ChessPiece {
         //throw new RuntimeException("Not implemented");
     }
 
-    private Collection<ChessMove> kingMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
-        List<ChessMove> moves = new ArrayList<>();
-        for(int i = -1; i <= 1; i++){
-            for(int j = -1; j <= 1; j++){
-                int row = myPosition.getRow() + i;
-                int col = myPosition.getColumn() + j;
-                ChessPosition position = new ChessPosition(row, col);
-                if(!board.outOfBounds(position)){
-                    ChessPiece checkPosition = board.getPiece(position);
-                    if(checkPosition == null || checkPosition.getTeamColor() != piece.getTeamColor()){
-                        moves.add(new ChessMove(myPosition, position, null));
-                    }
-                }
-            }
-        }
-        return moves;
-    }
+
 
     private Collection<ChessMove> knightMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
         List<ChessMove> moves = new ArrayList<>();
