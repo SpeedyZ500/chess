@@ -2,6 +2,7 @@ package chess;
 
 import chess.pieces.KingMovesCalculator;
 import chess.pieces.PawnMovesCalculator;
+import chess.pieces.RookMovesCalculator;
 
 import java.util.*;
 
@@ -73,7 +74,7 @@ public class ChessPiece {
         switch (piece.getPieceType()){
             case KING -> moves.addAll(new KingMovesCalculator().pieceMoves(board, myPosition));
             case PAWN -> moves.addAll(new PawnMovesCalculator().pieceMoves(board, myPosition));
-            case ROOK -> moves.addAll(this.rookMoves(board, myPosition, piece));
+            case ROOK -> moves.addAll(new RookMovesCalculator().pieceMoves(board, myPosition));
             case BISHOP -> moves.addAll(this.bishopMoves(board,myPosition, piece));
             case KNIGHT -> moves.addAll(this.knightMoves(board, myPosition, piece));
             case QUEEN -> {
@@ -107,7 +108,7 @@ public class ChessPiece {
         return moves;
     }
 
-    
+
 
     private Collection<ChessMove> rookMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
         List<ChessMove> moves = new ArrayList<>();
