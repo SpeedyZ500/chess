@@ -6,18 +6,19 @@ public class Placement {
     private ChessPosition position;
     private ChessPiece piece;
 
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
         Placement placement = (Placement) o;
-        return Objects.equals(getPosition(), placement.getPosition()) && Objects.equals(getPiece(), placement.getPiece());
+        return Objects.equals(position, placement.position) && Objects.equals(piece, placement.piece);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPosition(), getPiece());
+        return Objects.hash(position, piece);
     }
 
     Placement(ChessPosition position, ChessPiece piece){

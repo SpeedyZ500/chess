@@ -1,7 +1,9 @@
 package chess;
 
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -10,13 +12,12 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private ChessPiece[][] board;
+    private Set<Placement> board;
 
 
     public ChessBoard() {
-        this.board = new ChessPiece[8][8];
+        this.board = new HashSet<>();
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -24,18 +25,17 @@ public class ChessBoard {
             return false;
         }
         ChessBoard that = (ChessBoard) o;
-        return Objects.deepEquals(board, that.board);
+        return Objects.equals(board, that.board);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(board);
+        return Objects.hashCode(board);
     }
 
-    public ChessBoard(int rows, int cols){
-        this.board = new ChessPiece[rows][cols];
+    public Iterator<Placement> iterator(){
+        return board.iterator();
     }
-
     /**
      * Adds a chess piece to the chessboard
      *
@@ -46,7 +46,7 @@ public class ChessBoard {
         if(outOfBounds(position)){
             throw new InvalidPositionException("Chess Piece out of bounds");
         }
-        this.board[position.getRow() - 1][position.getColumn() - 1] = piece;
+        this.board.add(new Placement(position, piece));
     }
 
     public boolean outOfBounds(ChessPosition position){
@@ -63,7 +63,14 @@ public class ChessBoard {
         if(outOfBounds(position)){
             throw new InvalidPositionException("Chess Piece out of bounds");
         }
-        return this.board[position.getRow() - 1][position.getColumn() - 1];
+        ChessPiece piece = null;
+        for (Placement place : board) {
+            if(place.getPosition().equals(position) ){
+                piece = place.getPiece();
+                break;
+            }
+        }
+        return piece;
     }
 
     /**
@@ -71,15 +78,12 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        this.board = new ChessPiece[8][8];
-        for(int i = 1; i <= 8; i++){
-            switch(i){
-                case 1 -> resetBack(ChessGame.TeamColor.WHITE, i);
-                case 2 -> resetPawns(ChessGame.TeamColor.WHITE, i);
-                case 7 -> resetPawns(ChessGame.TeamColor.BLACK, i);
-                case 8 -> resetBack(ChessGame.TeamColor.BLACK, i);
-            };
-        }
+        board.clear();
+
+        resetBack(ChessGame.TeamColor.WHITE, 1);
+        resetPawns(ChessGame.TeamColor.WHITE, 2);
+        resetPawns(ChessGame.TeamColor.BLACK, 7);
+        resetBack(ChessGame.TeamColor.BLACK, 8);
     }
 
     private void resetPawns(ChessGame.TeamColor color, int row){
