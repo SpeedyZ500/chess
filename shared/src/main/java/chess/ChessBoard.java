@@ -71,6 +71,7 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
+        this.board = new ChessPiece[8][8];
         for(int i = 1; i <= 8; i++){
             switch(i){
                 case 1 -> resetBack(ChessGame.TeamColor.WHITE, i);

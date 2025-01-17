@@ -79,7 +79,6 @@ public class ChessPiece {
 
         }
         return moves;
-        //throw new RuntimeException("Not implemented");
     }
-    
+
 }
