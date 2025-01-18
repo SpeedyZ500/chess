@@ -11,24 +11,24 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
         ChessPiece piece = board.getPiece(position);
         int direction = 0;
         boolean start = false;
-        //int enPassantRow = 0;
+        int enPassantRow = 0;
         switch(piece.getTeamColor()){
             case BLACK:
                 direction = -1;
                 start = (position.getRow() == 7);
-                //enPassantRow = 4;
+                enPassantRow = 4;
                 break;
             case WHITE:
                 direction = 1;
                 start = (position.getRow() == 2);
-                //enPassantRow = 5;
+                enPassantRow = 5;
                 break;
             default:
                 break;
         };
         moves.addAll(pawnForward(board, position, direction, start));
         moves.addAll(pawnCapture(board, position, direction, piece));
-
+        moves.addAll(enPassant(board, position, direction, enPassantRow, piece));
         return moves;
     }
 
@@ -56,7 +56,6 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
                     }
                 }
             }
-
         }
         return moves;
     }
@@ -81,7 +80,47 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
         return moves;
     }
 
-
+    /**
+     * Checks to see if you can en Passant, and if so add that to possible moves list
+     *
+     * @param board
+     * @param position
+     * @param direction
+     * @param enPassantRow
+     * @param piece
+     * @return a list of possible en Passant moves
+     */
+    private Collection<ChessMove> enPassant(ChessBoard board, ChessPosition position, int direction, int enPassantRow, ChessPiece piece){
+        List<ChessMove> moves = new ArrayList<>();
+        int row = position.getRow();
+        int col = position.getColumn();
+        if(row == enPassantRow){
+            for(int i = -1; i <= 1; i += 2){
+                int checkCol = col + i;
+                ChessPosition checkPosition = new ChessPosition(row, checkCol);
+                ChessPiece checkPiece = board.getPiece(checkPosition);
+                if(checkPiece.getPieceType() == piece.getPieceType() &&
+                        checkPiece.getTeamColor() != piece.getTeamColor()){
+                    int checkRow = row + (direction * 2);
+                    Iterator<ChessBoard> hist = board.history();
+                    ChessBoard prev = new ChessBoard();
+                    while(hist.hasNext()){
+                        prev = hist.next();
+                    }
+                    ChessPosition prevPosition = new ChessPosition(checkRow, checkCol);
+                    ChessPosition endPosition = new ChessPosition(row + direction, checkCol);
+                    if((board.getPiece(prevPosition) == null) &&
+                            (prev.getPiece(checkPosition) == null) &&
+                            prev.getPiece(prevPosition).equals(checkPiece) &&
+                            (board.getPiece(endPosition) == null)
+                    ){
+                        moves.add(new ChessMove(position, endPosition, null));
+                    }
+                }
+            }
+        }
+        return moves;
+    }
 }
 
 
