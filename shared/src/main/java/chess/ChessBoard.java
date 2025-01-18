@@ -1,9 +1,6 @@
 package chess;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -12,11 +9,13 @@ import java.util.Set;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private Set<Placement> board;
+    private final Set<Placement> board;
+    private final List<Set<Placement>> history;
 
 
     public ChessBoard() {
         this.board = new HashSet<>();
+        this.history = new ArrayList<>();
     }
 
     @Override
@@ -25,17 +24,32 @@ public class ChessBoard {
             return false;
         }
         ChessBoard that = (ChessBoard) o;
-        return Objects.equals(board, that.board);
+        return Objects.equals(board, that.board) && Objects.equals(history, that.history);
     }
+
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(board);
+        return Objects.hash(board, history);
     }
 
+    /**
+     * Returns an iterator to remove pieces when captured, or moved
+     * @return board.iterator() an iterator used to track piece positions
+     */
     public Iterator<Placement> iterator(){
         return board.iterator();
     }
+
+    /**
+     * Returns an Iterator of the history of the board to be able to determine if it is a piece's first move
+     *
+     * @return history.iterator() to iterate through history
+     */
+    public Iterator<Set<Placement>> history(){
+        return history.iterator();
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -46,6 +60,7 @@ public class ChessBoard {
         if(outOfBounds(position)){
             throw new InvalidPositionException("Chess Piece out of bounds");
         }
+        history.add(board);
         this.board.add(new Placement(position, piece));
     }
 
@@ -79,11 +94,11 @@ public class ChessBoard {
      */
     public void resetBoard() {
         board.clear();
-
-        resetBack(ChessGame.TeamColor.WHITE, 1);
-        resetPawns(ChessGame.TeamColor.WHITE, 2);
-        resetPawns(ChessGame.TeamColor.BLACK, 7);
+        history.clear();
         resetBack(ChessGame.TeamColor.BLACK, 8);
+        resetPawns(ChessGame.TeamColor.BLACK, 7);
+        resetPawns(ChessGame.TeamColor.WHITE, 2);
+        resetBack(ChessGame.TeamColor.WHITE, 1);
     }
 
     private void resetPawns(ChessGame.TeamColor color, int row){
