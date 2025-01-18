@@ -2,9 +2,7 @@ package chess.pieces;
 
 import chess.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class PawnMovesCalculator implements PieceMovesCalculator {
     @Override
@@ -82,6 +80,8 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
         }
         return moves;
     }
+
+
 }
 
 

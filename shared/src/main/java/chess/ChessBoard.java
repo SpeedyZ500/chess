@@ -10,11 +10,15 @@ import java.util.*;
  */
 public class ChessBoard {
     private final Set<Placement> board;
-    private final List<Set<Placement>> history;
+    private final List<ChessBoard> history;
 
 
     public ChessBoard() {
         this.board = new HashSet<>();
+        this.history = new ArrayList<>();
+    }
+    public ChessBoard(Set<Placement> board){
+        this.board = board;
         this.history = new ArrayList<>();
     }
 
@@ -33,6 +37,7 @@ public class ChessBoard {
         return Objects.hash(board, history);
     }
 
+
     /**
      * Returns an iterator to remove pieces when captured, or moved
      * @return board.iterator() an iterator used to track piece positions
@@ -40,15 +45,19 @@ public class ChessBoard {
     public Iterator<Placement> iterator(){
         return board.iterator();
     }
+    public int numPieces(){
+        return board.size();
+    }
 
     /**
      * Returns an Iterator of the history of the board to be able to determine if it is a piece's first move
      *
      * @return history.iterator() to iterate through history
      */
-    public Iterator<Set<Placement>> history(){
+    public Iterator<ChessBoard> history(){
         return history.iterator();
     }
+
 
     /**
      * Adds a chess piece to the chessboard
@@ -60,7 +69,7 @@ public class ChessBoard {
         if(outOfBounds(position)){
             throw new InvalidPositionException("Chess Piece out of bounds");
         }
-        history.add(board);
+        history.add(new ChessBoard(board));
         this.board.add(new Placement(position, piece));
     }
 
