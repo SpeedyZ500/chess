@@ -69,7 +69,6 @@ public class ChessBoard {
         if(outOfBounds(position)){
             throw new InvalidPositionException("Chess Piece out of bounds");
         }
-        history.add(new ChessBoard(board));
         this.board.add(new Placement(position, piece));
     }
 
@@ -126,6 +125,55 @@ public class ChessBoard {
                 default -> null;
             };
             addPiece(new ChessPosition(row, i), new ChessPiece(color, type));
+        }
+    }
+
+    /**
+     * Moves Pieces on the board
+     * checks to see if there was a piece at the original position
+     * and then removes it
+     * if the chess piece is a pawn, and it moved diagonally (changed file)
+     * but there was no piece to capture en Passant must have occurred
+     * so remove the piece below it
+     * if the king did not take a piece, and the absolute delta file was 2
+     * that is castling, move the rook that is from the same direction as the king moved
+     * to the other side of the king
+     * If the promotion isn't null, promote the piece
+     * @param startPosition
+     * @param endPosition
+     * @param promotion
+     */
+    public void movePiece(ChessPosition startPosition, ChessPosition endPosition, ChessPiece.PieceType promotion){
+        history.add(new ChessBoard(board));
+        ChessPiece thisPiece = getPiece(startPosition);
+        ChessPiece endPiece = getPiece(endPosition);
+        board.remove(new Placement(startPosition, thisPiece));
+        int endCol = endPosition.getColumn();
+        int startCol = startPosition.getColumn();
+        int file = endCol - startCol;
+        int startRow = startPosition.getRow();
+        if(endPiece != null){
+            board.remove(new Placement(endPosition, endPiece));
+        } else if (thisPiece.getPieceType() == ChessPiece.PieceType.PAWN && startCol != endCol) {
+            ChessPosition checkPosition = new ChessPosition(startRow, endCol);
+            ChessPiece checkPiece = getPiece(checkPosition);
+            if(checkPiece != null){
+                board.remove(new Placement(checkPosition, checkPiece));
+            }
+        }else if(thisPiece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(file) == 2){
+            int dir = file/Math.abs(file);
+            int rookCol = endCol - dir;
+            ChessPosition rookPosition =  dir > 0 ? new ChessPosition(startRow, 8) : new ChessPosition(startRow, 1);
+            ChessPiece rook = getPiece(rookPosition);
+            if(rook != null) {
+                board.remove(new Placement(rookPosition, rook));
+                board.add(new Placement(new ChessPosition(startRow, rookCol), rook));
+            }
+        }
+        if(promotion != null){
+            board.add(new Placement(endPosition, new ChessPiece(thisPiece.getTeamColor(), promotion)));
+        }else{
+            board.add(new Placement(endPosition, thisPiece));
         }
     }
 }

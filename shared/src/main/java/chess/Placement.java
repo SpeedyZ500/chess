@@ -42,25 +42,4 @@ public class Placement {
     public ChessPiece getPiece(){
         return piece;
     }
-
-    /**
-     * promotes the piece at this placement
-     * @param piece
-     * (how we update the placement of a Pawn to a Queen/Rook/Bishop/Knight)
-     */
-    public void promotePiece(ChessPiece piece) {
-        this.piece = piece;
-    }
-
-    /**
-     * moves the placement to a new position
-     *
-     * @param position
-     * (how we update the position of a piece, through the use of a placement class)
-     */
-    public void movePiece(ChessPosition position){
-        this.position = position;
-    }
-
-
 }
