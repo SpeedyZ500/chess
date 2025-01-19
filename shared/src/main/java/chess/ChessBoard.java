@@ -45,9 +45,7 @@ public class ChessBoard {
     public Iterator<Placement> iterator(){
         return board.iterator();
     }
-    public int numPieces(){
-        return board.size();
-    }
+
 
     /**
      * Returns an Iterator of the history of the board to be able to determine if it is a piece's first move
@@ -103,10 +101,10 @@ public class ChessBoard {
     public void resetBoard() {
         board.clear();
         history.clear();
-        resetBack(ChessGame.TeamColor.BLACK, 8);
-        resetPawns(ChessGame.TeamColor.BLACK, 7);
-        resetPawns(ChessGame.TeamColor.WHITE, 2);
         resetBack(ChessGame.TeamColor.WHITE, 1);
+        resetPawns(ChessGame.TeamColor.WHITE, 2);
+        resetPawns(ChessGame.TeamColor.BLACK, 7);
+        resetBack(ChessGame.TeamColor.BLACK, 8);
     }
 
     private void resetPawns(ChessGame.TeamColor color, int row){
@@ -163,7 +161,7 @@ public class ChessBoard {
         }else if(thisPiece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(file) == 2){
             int dir = file/Math.abs(file);
             int rookCol = endCol - dir;
-            ChessPosition rookPosition =  dir > 0 ? new ChessPosition(startRow, 8) : new ChessPosition(startRow, 1);
+            ChessPosition rookPosition = new ChessPosition(startRow, dir > 0 ? 8 : 1);
             ChessPiece rook = getPiece(rookPosition);
             if(rook != null) {
                 board.remove(new Placement(rookPosition, rook));
