@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class RookMovesCalculator implements PieceMovesCalculator {
+public class RookMovesCalculator implements ChessMovesCalculator {
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         List<ChessMove> moves = new ArrayList<>();

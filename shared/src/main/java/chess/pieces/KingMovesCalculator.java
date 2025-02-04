@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class KingMovesCalculator implements PieceMovesCalculator {
+public class KingMovesCalculator implements ChessMovesCalculator {
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         List<ChessMove> moves = new ArrayList<>();

@@ -174,4 +174,8 @@ public class ChessBoard {
             board.add(new Placement(endPosition, thisPiece));
         }
     }
-}
+    public void movePiece(ChessMove move){
+        movePiece(move.getStartPosition(), move.getEndPosition(), move.getPromotionPiece());
+    }
+
+    }

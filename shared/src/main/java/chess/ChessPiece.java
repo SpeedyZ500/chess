@@ -76,6 +76,7 @@ public class ChessPiece {
             case BISHOP -> moves.addAll(new BishopMovesCalculator().pieceMoves(board, myPosition));
             case KNIGHT -> moves.addAll(new KnightMovesCalculator().pieceMoves(board, myPosition));
             case QUEEN -> moves.addAll(new QueenMovesCalculator().pieceMoves(board, myPosition));
+            case null -> moves = null;
 
         }
         return moves;

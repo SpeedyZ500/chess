@@ -4,7 +4,7 @@ import chess.*;
 
 import java.util.*;
 
-public class PawnMovesCalculator implements PieceMovesCalculator {
+public class PawnMovesCalculator implements ChessMovesCalculator {
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         List<ChessMove> moves = new ArrayList<>();

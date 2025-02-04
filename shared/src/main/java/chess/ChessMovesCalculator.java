@@ -2,6 +2,6 @@ package chess;
 
 import java.util.Collection;
 
-public interface PieceMovesCalculator {
+public interface ChessMovesCalculator {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position);
 }
