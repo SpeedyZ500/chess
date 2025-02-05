@@ -98,23 +98,27 @@ public class PawnMovesCalculator implements ChessMovesCalculator {
             for(int i = -1; i <= 1; i += 2){
                 int checkCol = col + i;
                 ChessPosition checkPosition = new ChessPosition(row, checkCol);
-                ChessPiece checkPiece = board.getPiece(checkPosition);
-                if(checkPiece.getPieceType() == piece.getPieceType() &&
-                        checkPiece.getTeamColor() != piece.getTeamColor()){
-                    int checkRow = row + (direction * 2);
-                    Iterator<ChessBoard> hist = board.history();
-                    ChessBoard prev = new ChessBoard();
-                    while(hist.hasNext()){
-                        prev = hist.next();
-                    }
-                    ChessPosition prevPosition = new ChessPosition(checkRow, checkCol);
-                    ChessPosition endPosition = new ChessPosition(row + direction, checkCol);
-                    if((board.getPiece(prevPosition) == null) &&
-                            (prev.getPiece(checkPosition) == null) &&
-                            prev.getPiece(prevPosition).equals(checkPiece) &&
-                            (board.getPiece(endPosition) == null)
-                    ){
-                        moves.add(new ChessMove(position, endPosition, null));
+                if(!board.outOfBounds(checkPosition)){
+                    ChessPiece checkPiece = board.getPiece(checkPosition);
+
+                    if( checkPiece != null && (checkPiece.getPieceType() == piece.getPieceType() &&
+                            checkPiece.getTeamColor() != piece.getTeamColor())){
+                        int checkRow = row + (direction * 2);
+                        Iterator<ChessBoard> hist = board.history();
+                        ChessBoard prev = new ChessBoard();
+                        while(hist.hasNext()){
+                            prev = hist.next();
+                        }
+                        ChessPosition prevPosition = new ChessPosition(checkRow, checkCol);
+                        ChessPosition endPosition = new ChessPosition(row + direction, checkCol);
+                        ChessPiece pawnPosition = prev.getPiece(prevPosition);
+                        if((board.getPiece(prevPosition) == null) &&
+                                (prev.getPiece(checkPosition) == null) &&
+                                pawnPosition != null && pawnPosition.getPieceType() == ChessPiece.PieceType.PAWN && pawnPosition.getTeamColor() != piece.getTeamColor() &&
+                                (board.getPiece(endPosition) == null)
+                        ){
+                            moves.add(new ChessMove(position, endPosition, null));
+                        }
                     }
                 }
             }

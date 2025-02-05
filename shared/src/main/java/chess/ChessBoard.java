@@ -148,7 +148,12 @@ public class ChessBoard {
      * @param promotion
      */
     public void movePiece(ChessPosition startPosition, ChessPosition endPosition, ChessPiece.PieceType promotion){
-        history.add(new ChessBoard(board));
+        ChessBoard prev = new ChessBoard();
+        Iterator<Placement> iter = iterator();
+        while(iter.hasNext()){
+            prev.addPiece(iter.next());
+        }
+        history.add(prev);
         ChessPiece thisPiece = getPiece(startPosition);
         ChessPiece endPiece = getPiece(endPosition);
 

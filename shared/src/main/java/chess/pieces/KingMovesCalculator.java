@@ -45,7 +45,7 @@ public class KingMovesCalculator implements ChessMovesCalculator {
                 int dir = rookCol > col?  1 : -1;
                 ChessPosition endPosition = new ChessPosition(row, col + (2*dir));
                 boolean pathOpen = true;
-                for(int i = col; i != rookCol; i += dir){
+                for(int i = col + dir; i != rookCol; i += dir){
                     if(board.getPiece(new ChessPosition(row, i)) != null){
                         pathOpen = false;
                         break;
@@ -63,11 +63,10 @@ public class KingMovesCalculator implements ChessMovesCalculator {
                     ChessPiece checkKing = check.getPiece(kingStart);
                     if(!king.equals(checkKing)){
                         kingMoved = true;
-                        break;
                     }
                     if(!rook.equals(checkRook)){
                         rookMoved = true;
-                        break;
+
                     }
                 }
                 if(kingMoved){
