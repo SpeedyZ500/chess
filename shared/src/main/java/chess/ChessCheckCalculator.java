@@ -15,7 +15,7 @@ public class ChessCheckCalculator {
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
-    public boolean isInCheck(ChessGame.TeamColor teamColor, int level) {
+    public boolean isInCheck( ChessGame.TeamColor teamColor) {
         ChessPiece king = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
         Iterator<Placement> iter = board.iterator();
         ChessPosition kingPosition = null;
@@ -23,7 +23,7 @@ public class ChessCheckCalculator {
         while(iter.hasNext()){
             Placement current = iter.next();
             if(current.getPiece().getTeamColor() != teamColor){
-                oppositeMoves.addAll(current.getPiece().pieceMoves(board, current.getPosition()));
+                oppositeMoves.addAll(current.getPiece().pieceMoves(board,current.getPosition()));
             }
             else if(current.getPiece().equals(king)){
                 kingPosition = current.getPosition();
@@ -41,9 +41,7 @@ public class ChessCheckCalculator {
         return inCheck;
     }
 
-    public boolean isInCheck(ChessGame.TeamColor teamColor) {
-        return isInCheck(teamColor, 0);
-    }
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -51,7 +49,7 @@ public class ChessCheckCalculator {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(ChessGame.TeamColor teamColor) {
-        return isInCheck(teamColor) && isInStalemate(teamColor);
+        return isInCheck(teamColor) && !canMove(teamColor);
     }
 
     /**
@@ -61,20 +59,22 @@ public class ChessCheckCalculator {
      * @param teamColor which team to check for stalemate
      * @return True if the specified team is in stalemate, otherwise false
      */
-    public boolean isInStalemate(ChessGame.TeamColor teamColor, int level) {
+    public boolean isInStalemate(ChessGame.TeamColor teamColor) {
+        return !canMove(teamColor) && !isInCheck(teamColor);
+    }
+
+    private boolean canMove(ChessGame.TeamColor teamColor){
         Iterator<Placement> iter = board.iterator();
         List<ChessMove> valid = new ArrayList<>();
         while(iter.hasNext()){
             Placement place = iter.next();
             if(place.getPiece().getTeamColor() == teamColor){
-                valid.addAll(new ChessMovesValidator(board).validMoves(place.getPosition(), level));
+                valid.addAll(new ChessMovesValidator(board).validMoves(place.getPosition()));
             }
         }
-        return valid.isEmpty();
+        return !valid.isEmpty();
     }
-    public boolean isInStalemate(ChessGame.TeamColor teamColor) {
-        return isInStalemate(teamColor, 0);
-    }
+
 
 
 

@@ -30,13 +30,13 @@ public class ChessBoard {
             return false;
         }
         ChessBoard that = (ChessBoard) o;
-        return Objects.equals(board, that.board) && Objects.equals(history, that.history);
+        return Objects.equals(board, that.board) /*&& Objects.equals(history, that.history)*/;
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(board, history);
+        return Objects.hash(board/*, history*/);
     }
 
 
@@ -151,7 +151,7 @@ public class ChessBoard {
         history.add(new ChessBoard(board));
         ChessPiece thisPiece = getPiece(startPosition);
         ChessPiece endPiece = getPiece(endPosition);
-        board.remove(new Placement(startPosition, thisPiece));
+
         int endCol = endPosition.getColumn();
         int startCol = startPosition.getColumn();
         int file = endCol - startCol;
@@ -179,6 +179,7 @@ public class ChessBoard {
         }else{
             board.add(new Placement(endPosition, thisPiece));
         }
+        board.remove(new Placement(startPosition, thisPiece));
     }
     public void movePiece(ChessMove move){
         movePiece(move.getStartPosition(), move.getEndPosition(), move.getPromotionPiece());

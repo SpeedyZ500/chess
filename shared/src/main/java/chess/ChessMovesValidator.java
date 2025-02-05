@@ -7,7 +7,6 @@ public class ChessMovesValidator {
     ChessMovesValidator(ChessBoard board){
         this.board = board;
     }
-    private static final int MAX_RECURSION = 3;
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -15,10 +14,10 @@ public class ChessMovesValidator {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition, int level){
+    public Collection<ChessMove> validMoves(ChessPosition startPosition){
         ChessPiece piece = board.getPiece(startPosition);
         List<ChessMove> valid = new ArrayList<>();
-        if(piece != null && level < MAX_RECURSION){
+        if(piece != null){
             ChessGame.TeamColor color = piece.getTeamColor();
 
             valid.addAll(piece.pieceMoves(board, startPosition));
@@ -26,7 +25,7 @@ public class ChessMovesValidator {
             Iterator<ChessMove> iter = valid.iterator();
             int row = startPosition.getRow();
             int col = startPosition.getColumn();
-            boolean check = new ChessCheckCalculator(board).isInCheck(color, level);
+            boolean check = new ChessCheckCalculator(board).isInCheck(color);
             while(iter.hasNext()){
                 Iterator<Placement> boardIter = board.iterator();
                 ChessBoard copyBoard = new ChessBoard();
@@ -34,19 +33,19 @@ public class ChessMovesValidator {
                 ChessPosition end = move.getEndPosition();
                 while(boardIter.hasNext()){
                     Placement place = boardIter.next();
-                    if(place.getPosition() != startPosition && place.getPosition() != end){
+                    if(!place.getPosition().equals(startPosition) && !place.getPosition().equals(end)){
                         copyBoard.addPiece(place);
                     }
                 }
 
-                copyBoard.addPiece(end, move.getPromotionPiece() == null ? new ChessPiece(color, move.getPromotionPiece()) : piece);
+                copyBoard.addPiece(end, move.getPromotionPiece() != null ? new ChessPiece(color, move.getPromotionPiece()) : piece);
 
                 int endRow = end.getRow();
                 int endCol = end.getColumn();
                 int rankDiff = endRow - row;
                 int fileDiff = endCol - col;
                 ChessPosition dir = new ChessPosition(rankDiff != 0 ? rankDiff/Math.abs(rankDiff) : rankDiff, fileDiff != 0 ? fileDiff/Math.abs(fileDiff) : fileDiff);
-                if(new ChessCheckCalculator(copyBoard).isInCheck(color, level + 1) || (!check && invalidDir.contains(dir))){
+                if(new ChessCheckCalculator(copyBoard).isInCheck(color) || (!check && invalidDir.contains(dir))){
                     if(!check){
                         invalidDir.add(dir);
                     }
@@ -56,9 +55,7 @@ public class ChessMovesValidator {
         }
         return valid;
     }
-    public Collection<ChessMove> validMoves( ChessPosition startPosition){
-        return validMoves(startPosition, 0);
-    }
+
 
 
     }

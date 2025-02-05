@@ -66,9 +66,7 @@ public class ChessGame {
         List<ChessMove> valid = new ArrayList<>();
         if(piece != null){
            valid.addAll(new ChessMovesValidator(board).validMoves(startPosition));
-           if(valid.contains(null)){
-               valid.remove(null);
-           }
+
         }
         return valid;
     }
@@ -88,6 +86,13 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
         board.movePiece(move);
+        if(turn == TeamColor.WHITE){
+            turn = TeamColor.BLACK;
+        }
+        else{
+            turn = TeamColor.WHITE;
+
+        }
     }
 
     /**
