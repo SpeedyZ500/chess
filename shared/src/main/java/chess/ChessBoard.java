@@ -13,6 +13,8 @@ public class ChessBoard {
     private final List<ChessBoard> history;
 
 
+
+
     public ChessBoard() {
         this.board = new HashSet<>();
         this.history = new ArrayList<>();

@@ -69,15 +69,19 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         List<ChessMove> moves = new ArrayList<>();
-        switch (piece.getPieceType()){
-            case KING -> moves.addAll(new KingMovesCalculator().pieceMoves(board, myPosition));
-            case PAWN -> moves.addAll(new PawnMovesCalculator().pieceMoves(board, myPosition));
-            case ROOK -> moves.addAll(new RookMovesCalculator().pieceMoves(board, myPosition));
-            case BISHOP -> moves.addAll(new BishopMovesCalculator().pieceMoves(board, myPosition));
-            case KNIGHT -> moves.addAll(new KnightMovesCalculator().pieceMoves(board, myPosition));
-            case QUEEN -> moves.addAll(new QueenMovesCalculator().pieceMoves(board, myPosition));
-            case null -> moves = null;
 
+        if (piece != null){
+            switch (piece.getPieceType()){
+                case KING -> moves.addAll(new KingMovesCalculator().pieceMoves(board, myPosition));
+                case PAWN -> moves.addAll(new PawnMovesCalculator().pieceMoves(board, myPosition));
+                case ROOK -> moves.addAll(new RookMovesCalculator().pieceMoves(board, myPosition));
+                case BISHOP -> moves.addAll(new BishopMovesCalculator().pieceMoves(board, myPosition));
+                case KNIGHT -> moves.addAll(new KnightMovesCalculator().pieceMoves(board, myPosition));
+                case QUEEN -> moves.addAll(new QueenMovesCalculator().pieceMoves(board, myPosition));
+                case null -> {}
+                default -> {}
+
+            }
         }
         return moves;
     }

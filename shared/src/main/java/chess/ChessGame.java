@@ -11,8 +11,6 @@ import java.util.*;
 public class ChessGame {
     private TeamColor turn;
     private ChessBoard board = new ChessBoard();
-    private final ChessCheckCalculator checkCalculator = new ChessCheckCalculator();
-    private final ChessMovesValidator movesValidator = new ChessMovesValidator();
 
     public ChessGame() {
         this.turn = TeamColor.WHITE;
@@ -64,7 +62,15 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        return movesValidator.validMoves(board, startPosition);
+        ChessPiece piece = board.getPiece(startPosition);
+        List<ChessMove> valid = new ArrayList<>();
+        if(piece != null){
+           valid.addAll(new ChessMovesValidator(board).validMoves(startPosition));
+           if(valid.contains(null)){
+               valid.remove(null);
+           }
+        }
+        return valid;
     }
 
     /**
@@ -91,7 +97,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        return checkCalculator.isInCheck(board, teamColor);
+        return new ChessCheckCalculator(board).isInCheck(teamColor);
     }
 
     /**
@@ -102,7 +108,7 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
 
-        return checkCalculator.isInCheckmate(board, teamColor);
+        return new ChessCheckCalculator(board).isInCheckmate(teamColor);
     }
 
     /**
@@ -113,15 +119,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        Iterator<Placement> iter = board.iterator();
-        List<ChessMove> valid = new ArrayList<>();
-        while(iter.hasNext()){
-            Placement place = iter.next();
-            if(place.getPiece().getTeamColor() == teamColor){
-                valid.addAll(validMoves(place.getPosition()));
-            }
-        }
-        return valid.isEmpty();
+        return new ChessCheckCalculator(board).isInStalemate(teamColor);
     }
 
     /**
