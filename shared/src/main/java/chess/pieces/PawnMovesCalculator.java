@@ -34,7 +34,8 @@ public class PawnMovesCalculator implements ChessMovesCalculator {
 
     private Collection<ChessMove> pawnPromotion(ChessPosition startPosition, ChessPosition endPosition){
         List<ChessMove> moves = new ArrayList<>();
-        ChessPiece.PieceType[] promotions = {ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.ROOK, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT};
+        ChessPiece.PieceType[] promotions = {ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.ROOK,
+                ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT};
         for(var promotion : promotions) {moves.add(new ChessMove(startPosition, endPosition, promotion));}
         return moves;
     }
@@ -113,7 +114,8 @@ public class PawnMovesCalculator implements ChessMovesCalculator {
                     ChessPiece pawnPosition = prev.getPiece(prevPosition);
                     if ((board.getPiece(prevPosition) == null) &&
                             (prev.getPiece(checkPosition) == null) &&
-                            pawnPosition != null && pawnPosition.getPieceType() == ChessPiece.PieceType.PAWN && pawnPosition.getTeamColor() != piece.getTeamColor() &&
+                            pawnPosition != null && pawnPosition.getPieceType() == ChessPiece.PieceType.PAWN
+                            && pawnPosition.getTeamColor() != piece.getTeamColor() &&
                             (board.getPiece(endPosition) == null)
                     ) {
                         moves.add(new ChessMove(position, endPosition, null));
