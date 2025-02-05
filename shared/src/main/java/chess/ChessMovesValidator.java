@@ -47,11 +47,15 @@ public class ChessMovesValidator {
                 int fileDiff = endCol - col;
                 ChessPosition dir = new ChessPosition(rankDiff != 0 ? rankDiff/Math.abs(rankDiff) :
                         rankDiff, fileDiff != 0 ? fileDiff/Math.abs(fileDiff) : fileDiff);
-                if(new ChessCheckCalculator(copyBoard).isInCheck(color) || (!check && invalidDir.contains(dir))){
-                    if(!check){
+                if(new ChessCheckCalculator(copyBoard).isInCheck(color) || (!check && invalidDir.contains(dir)) ||
+                        (invalidDir.contains(dir) && piece.getPieceType() == ChessPiece.PieceType.KING)){
+                    if(!check) {
                         invalidDir.add(dir);
                     }
                     iter.remove();
+                }
+                if(check && piece.getPieceType() == ChessPiece.PieceType.KING){
+                    invalidDir.add(dir);
                 }
             }
         }
