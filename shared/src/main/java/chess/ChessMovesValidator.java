@@ -38,13 +38,15 @@ public class ChessMovesValidator {
                     }
                 }
 
-                copyBoard.addPiece(end, move.getPromotionPiece() != null ? new ChessPiece(color, move.getPromotionPiece()) : piece);
+                copyBoard.addPiece(end, move.getPromotionPiece() != null ?
+                        new ChessPiece(color, move.getPromotionPiece()) : piece);
 
                 int endRow = end.getRow();
                 int endCol = end.getColumn();
                 int rankDiff = endRow - row;
                 int fileDiff = endCol - col;
-                ChessPosition dir = new ChessPosition(rankDiff != 0 ? rankDiff/Math.abs(rankDiff) : rankDiff, fileDiff != 0 ? fileDiff/Math.abs(fileDiff) : fileDiff);
+                ChessPosition dir = new ChessPosition(rankDiff != 0 ? rankDiff/Math.abs(rankDiff) :
+                        rankDiff, fileDiff != 0 ? fileDiff/Math.abs(fileDiff) : fileDiff);
                 if(new ChessCheckCalculator(copyBoard).isInCheck(color) || (!check && invalidDir.contains(dir))){
                     if(!check){
                         invalidDir.add(dir);
