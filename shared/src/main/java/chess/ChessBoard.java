@@ -70,6 +70,10 @@ public class ChessBoard {
         this.board.add(new Placement(position, piece));
     }
 
+    public void addPiece(Placement place){
+        addPiece(place.getPosition(), place.getPiece());
+    }
+
     public boolean outOfBounds(ChessPosition position){
         return position.getRow() < 1 || position.getRow() > 8 || position.getColumn() < 1 || position.getColumn() > 8;
     }

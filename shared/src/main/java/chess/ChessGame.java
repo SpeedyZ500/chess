@@ -11,6 +11,9 @@ import java.util.*;
 public class ChessGame {
     private TeamColor turn;
     private ChessBoard board = new ChessBoard();
+    private final ChessCheckCalculator checkCalculator = new ChessCheckCalculator();
+    private final ChessMovesValidator movesValidator = new ChessMovesValidator();
+
     public ChessGame() {
         this.turn = TeamColor.WHITE;
         this.board.resetBoard();
@@ -39,7 +42,6 @@ public class ChessGame {
 
     /**
      * Set's which teams turn it is
-     *
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
@@ -62,8 +64,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-
-        throw new RuntimeException("Not implemented");
+        return movesValidator.validMoves(board, startPosition);
     }
 
     /**
@@ -90,29 +91,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPiece king = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
-        Iterator<Placement> iter = board.iterator();
-        ChessPosition kingPosition = null;
-        List<ChessMove> oppositeMoves = new ArrayList<>();
-        while(iter.hasNext()){
-            Placement current = iter.next();
-            if(current.getPiece().getTeamColor() != teamColor){
-                oppositeMoves.addAll(validMoves(current.getPosition()));
-            }
-            else if(current.getPiece().equals(king)){
-                kingPosition = current.getPosition();
-            }
-        }
-        Iterator<ChessMove> moveIter = oppositeMoves.iterator();
-        boolean inCheck = false;
-        while(moveIter.hasNext()){
-            ChessMove move = moveIter.next();
-            if(move.getEndPosition().equals(kingPosition)){
-                inCheck = true;
-                break;
-            }
-        }
-        return inCheck;
+        return checkCalculator.isInCheck(board, teamColor);
     }
 
     /**
@@ -123,7 +102,7 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
 
-        return isInCheck(teamColor) && isInStalemate(teamColor);
+        return checkCalculator.isInCheckmate(board, teamColor);
     }
 
     /**
@@ -138,7 +117,7 @@ public class ChessGame {
         List<ChessMove> valid = new ArrayList<>();
         while(iter.hasNext()){
             Placement place = iter.next();
-            if(place.getPiece().getTeamColora() == teamColor){
+            if(place.getPiece().getTeamColor() == teamColor){
                 valid.addAll(validMoves(place.getPosition()));
             }
         }
@@ -164,4 +143,6 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return board;
     }
+
+
 }
