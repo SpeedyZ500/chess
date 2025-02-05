@@ -23,7 +23,7 @@ public class ChessCheckCalculator {
         while(iter.hasNext()){
             Placement current = iter.next();
             if(current.getPiece().getTeamColor() != teamColor){
-                oppositeMoves.addAll(new ChessMovesValidator(board).validMoves(current.getPosition(), level));
+                oppositeMoves.addAll(current.getPiece().pieceMoves(board, current.getPosition()));
             }
             else if(current.getPiece().equals(king)){
                 kingPosition = current.getPosition();

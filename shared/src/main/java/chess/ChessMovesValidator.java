@@ -49,8 +49,8 @@ public class ChessMovesValidator {
                 if(new ChessCheckCalculator(copyBoard).isInCheck(color, level + 1) || (!check && invalidDir.contains(dir))){
                     if(!check){
                         invalidDir.add(dir);
-                        iter.remove();
                     }
+                    iter.remove();
                 }
             }
         }
