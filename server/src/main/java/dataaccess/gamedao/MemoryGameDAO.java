@@ -12,7 +12,10 @@ public class MemoryGameDAO implements GameDAO {
     private int nextId = 1;
     HashMap<Integer, GameData> games = new HashMap<>();
     @Override
-    public int createGame(GameData gameData) throws DataAccessException {
+    public GameData createGame(GameData gameData) throws DataAccessException {
+        if(this.gameExists(gameData.gameName())){
+            throw new DataAccessException(String.format("A game with the name: %s already exists", gameData.gameName()));
+        }
         gameData = new GameData(
                 nextId++,
                 gameData.whiteUsername(),
@@ -21,11 +24,11 @@ public class MemoryGameDAO implements GameDAO {
                 gameData.game()
         );
         games.put(gameData.gameID(), gameData);
-        return gameData.gameID();
+        return gameData;
     }
 
     @Override
-    public Collection<GameData> lisGames() throws DataAccessException {
+    public Collection<GameData> listGames() throws DataAccessException {
         return games.values();
     }
 
@@ -35,8 +38,9 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void updateGame(GameData gameData) throws DataAccessException {
+    public GameData updateGame(GameData gameData) throws DataAccessException {
         games.put(gameData.gameID(), gameData);
+        return gameData;
     }
 
     @Override

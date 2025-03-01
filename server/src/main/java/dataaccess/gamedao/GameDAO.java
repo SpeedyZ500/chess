@@ -6,10 +6,10 @@ import model.GameData;
 import java.util.Collection;
 
 public interface GameDAO {
-    int createGame(GameData gameData) throws DataAccessException;
-    Collection<GameData> lisGames() throws DataAccessException;
+    GameData createGame(GameData gameData) throws DataAccessException;
+    Collection<GameData> listGames() throws DataAccessException;
     GameData getGame(Integer gameID) throws DataAccessException;
-    void updateGame(GameData gameData) throws DataAccessException;
+    GameData updateGame(GameData gameData) throws DataAccessException;
     void deleteGame(Integer gameID) throws DataAccessException;
     void clearGames() throws DataAccessException;
     boolean gameExists(String gameName);
