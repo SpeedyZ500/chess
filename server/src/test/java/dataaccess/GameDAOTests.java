@@ -37,14 +37,7 @@ public class GameDAOTests {
         assertDoesNotThrow(() -> gameDAO.createGame(gameData));
     }
 
-    @ParameterizedTest
-    @ValueSource(classes = {MemoryGameDAO.class})
-    void sameName(Class<? extends GameDAO> dbClass) throws DataAccessException {
-        GameDAO gameDAO = getGameDAO(dbClass);
-        var gameData = new GameData(0, "", "", "idk", new ChessGame());
-        gameDAO.createGame(gameData);
-        assertThrows(DataAccessException.class, () -> gameDAO.createGame(gameData));
-    }
+
 
     @ParameterizedTest
     @ValueSource(classes = {MemoryGameDAO.class})

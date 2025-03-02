@@ -1,7 +1,12 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.authdao.AuthDAO;
 import dataaccess.userdao.UserDAO;
+import model.AuthData;
+import model.UserData;
+
+import java.util.Collection;
 
 public class UserService {
     private final UserDAO userDAO;
@@ -11,4 +16,63 @@ public class UserService {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }
+    public Collection<UserData> listUsers() throws ResponseException{
+        try{
+            return userDAO.listUsers();
+        } catch (Exception e) {
+            throw new ResponseException(500, e.getMessage());
+        }
+    }
+    public Collection<AuthData> listAuths() throws ResponseException{
+        try{
+            return authDAO.listAuths();
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
+    }
+    public AuthData register(UserData userData) throws ResponseException {
+        try {
+            UserData exists = null;
+            exists = userDAO.getUser(userData.username());
+            if (exists != null) {
+                throw new ResponseException(403, "Error: already taken");
+            }
+            exists = userDAO.createUser(userData);
+            return authDAO.createAuth(new AuthData("", exists.username()));
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Error: " + e.getMessage());
+        }
+    }
+
+    public AuthData login(UserData user) throws ResponseException{
+        try{
+            UserData existing = userDAO.getUser(user.username());
+            if(existing == null || !existing.password().equals(user.password())){
+                throw new ResponseException(401, "Error: unauthorized");
+            }
+            return authDAO.createAuth(new AuthData("", user.username()));
+        }
+        catch (DataAccessException e) {
+            throw new ResponseException(500, "Error: " + e.getMessage());
+        }
+    }
+
+    public boolean verifyToken(String authToken) throws ResponseException{
+        try{
+            return (authDAO.getAuth(authToken) != null);
+        }
+        catch(DataAccessException e){
+            throw new ResponseException(500,"Error: " + e.getMessage());
+        }
+    }
+
+    public void logout(String authToken) throws ResponseException{
+        try{
+            authDAO.deleteAuth(authToken);
+        }
+        catch(DataAccessException e){
+            throw new ResponseException(500,"Error: " + e.getMessage());
+        }
+    }
+
 }

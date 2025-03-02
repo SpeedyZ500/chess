@@ -13,9 +13,6 @@ public class MemoryGameDAO implements GameDAO {
     HashMap<Integer, GameData> games = new HashMap<>();
     @Override
     public GameData createGame(GameData gameData) throws DataAccessException {
-        if(this.gameExists(gameData.gameName())){
-            throw new DataAccessException(String.format("A game with the name: %s already exists", gameData.gameName()));
-        }
         gameData = new GameData(
                 nextId++,
                 gameData.whiteUsername(),

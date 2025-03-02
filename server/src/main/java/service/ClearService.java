@@ -16,10 +16,14 @@ public class ClearService {
         this.gameDAO = gameDAO;
     }
 
-    public void clear() throws DataAccessException{
-        authDAO.clearAuths();
-        userDAO.clearUsers();
-        gameDAO.clearGames();
+    public void clear() throws ResponseException{
+        try{
+            authDAO.clearAuths();
+            userDAO.clearUsers();
+            gameDAO.clearGames();
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Error:" + e.getMessage());
+        }
     }
 
 
