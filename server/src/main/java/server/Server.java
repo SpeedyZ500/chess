@@ -12,10 +12,6 @@ import service.ResponseException;
 import service.UserService;
 import spark.*;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import static spark.Spark.halt;
 
 public class Server {
@@ -70,7 +66,7 @@ public class Server {
     }
 
     private void exceptionHandler(ResponseException ex, Request req, Response res){
-        res.status(ex.StatusCode());
+        res.status(ex.statusCode());
         res.body(ex.toJson());
     }
 
