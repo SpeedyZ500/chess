@@ -17,30 +17,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ClearServiceTest {
-    static final GameDAO gameDAO = new MemoryGameDAO();
-    static final UserDAO userDAO = new MemoryUserDAO();
-    static final AuthDAO authDAO = new MemoryAuthDAO();
-    static final ClearService service = new ClearService(authDAO, userDAO, gameDAO);
+    static final GameDAO GAME_DAO = new MemoryGameDAO();
+    static final UserDAO USER_DAO = new MemoryUserDAO();
+    static final AuthDAO AUTH_DAO = new MemoryAuthDAO();
+    static final ClearService CLEAR_SERVICE = new ClearService(AUTH_DAO, USER_DAO, GAME_DAO);
     @BeforeEach
     void add() throws DataAccessException {
-        userDAO.createUser(new UserData("bill_nye_science", "12345", "billnye@scienceguy.com"));
-        userDAO.createUser(new UserData("sonic_the_hedgehog", "got2goFast!", "sonichedgehog@sega.org"));
-        userDAO.createUser(new UserData("ash_catch_em", "peek@U4L!fe", "ash@pokemon.com"));
-        authDAO.createAuth(new AuthData("", "bill_nye_science"));
-        authDAO.createAuth(new AuthData("", "sonic_the_hedgehog"));
-        authDAO.createAuth(new AuthData("", "ash_catch_em"));
-        gameDAO.createGame(new GameData(0, "", "", "idk", new ChessGame()));
-        gameDAO.createGame(new GameData(0, "", "", "Chess Masters", new ChessGame()));
-        gameDAO.createGame(new GameData(0, "", "", "Chess Duels", new ChessGame()));
+        USER_DAO.createUser(new UserData("bill_nye_science", "12345", "billnye@scienceguy.com"));
+        USER_DAO.createUser(new UserData("sonic_the_hedgehog", "got2goFast!", "sonichedgehog@sega.org"));
+        USER_DAO.createUser(new UserData("ash_catch_em", "peek@U4L!fe", "ash@pokemon.com"));
+        AUTH_DAO.createAuth(new AuthData("", "bill_nye_science"));
+        AUTH_DAO.createAuth(new AuthData("", "sonic_the_hedgehog"));
+        AUTH_DAO.createAuth(new AuthData("", "ash_catch_em"));
+        GAME_DAO.createGame(new GameData(0, "", "", "idk", new ChessGame()));
+        GAME_DAO.createGame(new GameData(0, "", "", "Chess Masters", new ChessGame()));
+        GAME_DAO.createGame(new GameData(0, "", "", "Chess Duels", new ChessGame()));
     }
 
     @Test
     void clear() throws ResponseException{
-        service.clear();
+        CLEAR_SERVICE.clear();
         try{
-            assertEquals(0, authDAO.listAuths().size());
-            assertEquals(0, userDAO.listUsers().size());
-            assertEquals(0, gameDAO.listGames().size());
+            assertEquals(0, AUTH_DAO.listAuths().size());
+            assertEquals(0, USER_DAO.listUsers().size());
+            assertEquals(0, GAME_DAO.listGames().size());
         } catch (DataAccessException e) {
             throw new ResponseException(500, e.getMessage());
         }
