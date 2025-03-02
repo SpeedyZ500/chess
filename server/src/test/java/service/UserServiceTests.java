@@ -59,12 +59,28 @@ public class UserServiceTests {
         assertThrows(ResponseException.class, () -> userService.login(userData));
     }
     @Test
-    void passwordMustMatch()throws ResponseException{
+    void passwordMustMatch() throws ResponseException{
         var userData = new UserData("sonic_the_hedgehog", "got2goFast!", "sonichedgehog@sega.org");
         userService.register(userData);
         var missMatch = new UserData("sonic_the_hedgehog", "got2gofast!", "");
 
         assertThrows(ResponseException.class, () -> userService.login(missMatch));
+    }
+
+    @Test
+    void testAuthTokenExists() throws ResponseException{
+        var userData = new UserData("sonic_the_hedgehog", "got2goFast!", "sonichedgehog@sega.org");
+        userService.register(userData);
+        AuthData authData = userService.login(userData);
+        assertTrue(userService.verifyToken(authData.authToken()));
+    }
+    @Test
+    void logout() throws ResponseException{
+        var userData = new UserData("sonic_the_hedgehog", "got2goFast!", "sonichedgehog@sega.org");
+        userService.register(userData);
+        AuthData authData = userService.login(userData);
+        userService.logout(authData.authToken());
+        assertFalse(userService.verifyToken(authData.authToken()));
     }
 
 

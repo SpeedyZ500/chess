@@ -40,4 +40,11 @@ public class UserHandler {
         return res.body();
     }
 
+    public Object logout(Request req, Response res) throws ResponseException {
+        String authToken = req.headers("authorization");
+        userService.logout(authToken);
+        res.status(200);
+        return "";
+    }
+
 }

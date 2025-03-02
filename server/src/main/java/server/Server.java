@@ -12,6 +12,12 @@ import service.ResponseException;
 import service.UserService;
 import spark.*;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import static spark.Spark.halt;
+
 public class Server {
     private final UserDAO userDAO= new MemoryUserDAO();
     private final AuthDAO authDAO = new MemoryAuthDAO();
@@ -33,15 +39,30 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-
-        //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.delete("/db", this::clear);
         Spark.post("/user", userHandler::register);
         Spark.post("/session", userHandler::login);
+        Spark.before("/session", this::filter);
+        Spark.before("/game", this::filter);
+        Spark.delete("/session", userHandler::logout);
         Spark.exception(ResponseException.class, this::exceptionHandler);
+        //This line initializes the server and can be removed once you have a functioning endpoint
+
+
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+    private void filter(Request req, Response res) throws ResponseException{
+        String path = req.pathInfo();
+        String method = req.requestMethod().toLowerCase();
+        if(!path.equals("/session") || !method.equals("post") ){
+            String header = req.headers("authorization");
+            if(!userService.verifyToken(header) || header == null){
+                throw new ResponseException(401, "Error: unauthorized");
+            }
+        }
+
     }
 
     private void exceptionHandler(ResponseException ex, Request req, Response res){
