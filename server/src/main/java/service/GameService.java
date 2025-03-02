@@ -26,7 +26,7 @@ public class GameService {
             if(gameName == null || gameDAO.gameExists(gameName)){
                 throw new ResponseException(400, "Error: bad request");
             }
-            return gameDAO.createGame(new GameData(0, "","",gameName, new ChessGame())).gameID();
+            return gameDAO.createGame(new GameData(0, null,null,gameName, new ChessGame())).gameID();
         }
         catch(DataAccessException e){
             throw new ResponseException(500, "Error: " + e.getMessage());
@@ -56,8 +56,8 @@ public class GameService {
                 throw new ResponseException(400, "Error: bad request");
             }
             if(
-                    (playerColor.equalsIgnoreCase("BLACK") && !gameData.blackUsername().isEmpty())
-                    || (playerColor.equalsIgnoreCase("WHITE") && !gameData.whiteUsername().isEmpty())
+                    (playerColor.equalsIgnoreCase("BLACK") && gameData.blackUsername() != null)
+                    || (playerColor.equalsIgnoreCase("WHITE") && gameData.whiteUsername() != null)
             ){
                 throw new ResponseException(403, "Error: already taken");
             }

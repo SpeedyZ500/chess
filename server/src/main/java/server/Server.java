@@ -26,6 +26,7 @@ public class Server {
     private final UserService userService = new UserService(userDAO, authDAO);
     private final GameService gameService = new GameService(gameDAO);
     private final UserHandler userHandler = new UserHandler(userService);
+    private final GameHandler gameHandler = new GameHandler(userService, gameService);
 
 
 
@@ -45,6 +46,9 @@ public class Server {
         Spark.before("/session", this::filter);
         Spark.before("/game", this::filter);
         Spark.delete("/session", userHandler::logout);
+        Spark.get("/game", gameHandler::listGames);
+        Spark.post("/game", gameHandler::createGame);
+        Spark.put("/game", gameHandler::joinGame);
         Spark.exception(ResponseException.class, this::exceptionHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint
 
