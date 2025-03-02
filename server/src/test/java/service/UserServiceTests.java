@@ -83,5 +83,13 @@ public class UserServiceTests {
         assertFalse(userService.verifyToken(authData.authToken()));
     }
 
+    @Test
+    void getUsername() throws ResponseException{
+        var userData = new UserData("sonic_the_hedgehog", "got2goFast!", "sonichedgehog@sega.org");
+        AuthData authData = userService.register(userData);
+        var username = userService.getUsername(authData.authToken());
+        assertEquals(username, userData.username());
+    }
+
 
 }

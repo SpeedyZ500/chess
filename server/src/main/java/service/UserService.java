@@ -75,4 +75,12 @@ public class UserService {
         }
     }
 
+    public String getUsername(String authToken) throws ResponseException{
+        try{
+            return authDAO.getAuth(authToken).username();
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
+    }
+
 }
