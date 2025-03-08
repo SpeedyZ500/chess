@@ -85,6 +85,26 @@ public class ChessPiece {
         }
         return moves;
     }
+    public String pieceRep(){
+        String rep = switch(type){
+            case KING -> "K";
+            case PAWN -> "P";
+            case BISHOP -> "B";
+            case ROOK -> "R";
+            case QUEEN -> "Q";
+            case KNIGHT -> "N";
+            case null -> " ";
+            default -> " ";
+        };
+        return pieceColor == ChessGame.TeamColor.BLACK ? rep.toLowerCase() : rep;
+    }
 
 
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                '}';
+    }
 }

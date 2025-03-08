@@ -1,13 +1,14 @@
-package dataaccess.gamedao;
+package dataaccess;
+//really wanted to put this in the gamedao subpackage,
+// but it wouldn't let me because the methods for DatabaseManager are default
 
-import dataaccess.DataAccessException;
+import dataaccess.gamedao.GameDAO;
 import model.GameData;
 
 import java.util.Collection;
 import java.util.List;
 
-public class SQLGameDAO implements GameDAO{
-    //note not writing yet, just using it to implement the logic in the tests
+public class SQLGameDAO implements GameDAO {
     @Override
     public GameData createGame(GameData gameData) throws DataAccessException {
         return null;

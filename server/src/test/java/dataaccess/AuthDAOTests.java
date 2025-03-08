@@ -2,7 +2,6 @@ package dataaccess;
 
 import dataaccess.authdao.AuthDAO;
 import dataaccess.authdao.MemoryAuthDAO;
-import dataaccess.authdao.SQLAuthDAO;
 import model.AuthData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -27,7 +26,7 @@ public class AuthDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryAuthDAO.class})
+    @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
     void createAuth(Class<? extends AuthDAO> dbClass) throws DataAccessException {
         AuthDAO authDAO = getAuthDAO(dbClass);
         var authData = new AuthData("", "bill_nye_science");
@@ -35,7 +34,7 @@ public class AuthDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryAuthDAO.class})
+    @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
     void getAuth(Class<? extends AuthDAO> dbClass) throws DataAccessException{
         AuthDAO authDAO = getAuthDAO(dbClass);
         var expected = authDAO.createAuth(new AuthData("", "bill_nye_science"));
@@ -44,7 +43,7 @@ public class AuthDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryAuthDAO.class})
+    @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
     void listAuths(Class<? extends AuthDAO> dbClass) throws DataAccessException{
         AuthDAO authDAO = getAuthDAO(dbClass);
         List<AuthData> expected = new ArrayList<>();
@@ -55,11 +54,14 @@ public class AuthDAOTests {
         expected.forEach((auth) -> expectedMap.put(auth.authToken(), auth));
 
         var actual = authDAO.listAuths();
-        assertAuthCollectionEqual(expectedMap.values(), actual);
+        Map<String, AuthData> actualMap = new HashMap<>();
+        actual.forEach((auth) -> actualMap.put(auth.authToken(), auth));
+
+        assertAuthCollectionEqual(expectedMap.values(), actualMap.values());
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryAuthDAO.class})
+    @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
     void deleteAuth(Class<? extends AuthDAO> dbClass) throws DataAccessException{
         AuthDAO authDAO = getAuthDAO(dbClass);
         List<AuthData> expected = new ArrayList<>();
@@ -71,11 +73,15 @@ public class AuthDAOTests {
         authDAO.deleteAuth(deleteAuth.authToken());
 
         var actual = authDAO.listAuths();
-        assertAuthCollectionEqual(expectedMap.values(), actual);
+        Map<String, AuthData> actualMap = new HashMap<>();
+        actual.forEach((auth) -> actualMap.put(auth.authToken(), auth));
+
+        assertAuthCollectionEqual(expectedMap.values(), actualMap.values());
+
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryAuthDAO.class})
+    @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
     void clearAuths(Class<? extends AuthDAO> dbClass) throws DataAccessException{
         AuthDAO authDAO = getAuthDAO(dbClass);
         authDAO.createAuth(new AuthData("", "bill_nye_science"));

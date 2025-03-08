@@ -148,5 +148,11 @@ public class ChessGame {
         return board;
     }
 
-
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "turn=" + turn +
+                ", board=" + board +
+                '}';
+    }
 }

@@ -5,7 +5,6 @@ import chess.ChessMove;
 import chess.ChessPosition;
 import dataaccess.gamedao.GameDAO;
 import dataaccess.gamedao.MemoryGameDAO;
-import dataaccess.gamedao.SQLGameDAO;
 import model.GameData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -30,7 +29,7 @@ public class GameDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryGameDAO.class})
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void createGame(Class<? extends GameDAO> dbClass) throws DataAccessException {
         GameDAO gameDAO = getGameDAO(dbClass);
         var gameData = new GameData(0, "", "", "idk", new ChessGame());
@@ -40,7 +39,7 @@ public class GameDAOTests {
 
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryGameDAO.class})
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void getGame(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
         var expected = gameDAO.createGame(new GameData(0, "", "", "idk", new ChessGame()));
@@ -49,7 +48,7 @@ public class GameDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryGameDAO.class})
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void listGames(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
         List<GameData> expected = new ArrayList<>();
@@ -62,7 +61,7 @@ public class GameDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryGameDAO.class})
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void deleteGame(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
         List<GameData> expected = new ArrayList<>();
@@ -77,7 +76,7 @@ public class GameDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryGameDAO.class})
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void clearGames(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
         gameDAO.createGame(new GameData(0, "", "", "idk", new ChessGame()));
@@ -89,7 +88,7 @@ public class GameDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryGameDAO.class})
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void updateGame(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
         var gameData = gameDAO.createGame(new GameData(0, "", "", "idk", new ChessGame()));

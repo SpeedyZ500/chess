@@ -2,7 +2,6 @@ package dataaccess;
 
 import dataaccess.userdao.UserDAO;
 import dataaccess.userdao.MemoryUserDAO;
-import dataaccess.userdao.SQLUserDAO;
 import model.UserData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -27,7 +26,7 @@ public class UserDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryUserDAO.class})
+    @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
     void createUser(Class<? extends UserDAO> dbClass) throws DataAccessException {
         UserDAO userDAO = getUserDAO(dbClass);
         var userData = new UserData("bill_nye_science", "12345", "billnye@scienceguy.com");
@@ -35,7 +34,7 @@ public class UserDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryUserDAO.class})
+    @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
     void getUser(Class<? extends UserDAO> dbClass) throws DataAccessException{
         UserDAO userDAO = getUserDAO(dbClass);
         var expected = userDAO.createUser(new UserData("bill_nye_science", "12345", "billnye@scienceguy.com"));
@@ -44,7 +43,7 @@ public class UserDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryUserDAO.class})
+    @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
     void listUsers(Class<? extends UserDAO> dbClass) throws DataAccessException{
         UserDAO userDAO = getUserDAO(dbClass);
         Map<String, UserData> expected = new HashMap<>();
@@ -57,7 +56,7 @@ public class UserDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryUserDAO.class})
+    @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
     void deleteUser(Class<? extends UserDAO> dbClass) throws DataAccessException{
         UserDAO userDAO = getUserDAO(dbClass);
         Map<String, UserData> expected = new HashMap<>();
@@ -72,7 +71,7 @@ public class UserDAOTests {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {MemoryUserDAO.class})
+    @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
     void clearUsers(Class<? extends UserDAO> dbClass) throws DataAccessException{
         UserDAO userDAO = getUserDAO(dbClass);
         userDAO.createUser(new UserData("bill_nye_science", "12345", "billnye@scienceguy.com"));

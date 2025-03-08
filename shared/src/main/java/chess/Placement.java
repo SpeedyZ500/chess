@@ -42,4 +42,12 @@ public class Placement {
     public ChessPiece getPiece(){
         return piece;
     }
+
+    @Override
+    public String toString() {
+        return "Placement{" +
+                "position=" + position +
+                ", piece=" + piece +
+                '}';
+    }
 }
