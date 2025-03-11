@@ -1,5 +1,9 @@
 package server;
 
+import dataaccess.DataAccessException;
+import dataaccess.SQLAuthDAO;
+import dataaccess.SQLGameDAO;
+import dataaccess.SQLUserDAO;
 import dataaccess.authdao.AuthDAO;
 import dataaccess.authdao.MemoryAuthDAO;
 import dataaccess.gamedao.GameDAO;
@@ -15,17 +19,33 @@ import spark.*;
 import static spark.Spark.halt;
 
 public class Server {
-    private final UserDAO userDAO= new MemoryUserDAO();
-    private final AuthDAO authDAO = new MemoryAuthDAO();
-    private final GameDAO gameDAO = new MemoryGameDAO();
-    private final ClearService clearService = new ClearService(authDAO, userDAO, gameDAO);
-    private final UserService userService = new UserService(userDAO, authDAO);
-    private final GameService gameService = new GameService(gameDAO);
-    private final UserHandler userHandler = new UserHandler(userService);
-    private final GameHandler gameHandler = new GameHandler(userService, gameService);
 
+    private final ClearService clearService;
+    private final UserService userService;
+    private final UserHandler userHandler;
+    private final GameHandler gameHandler;
 
+    public Server(){
+        UserDAO userDAO = new MemoryUserDAO();
+        AuthDAO authDAO = new MemoryAuthDAO();
+        GameDAO gameDAO = new MemoryGameDAO();
+        try{
+            userDAO = new SQLUserDAO();
+            authDAO = new SQLAuthDAO();
+            gameDAO = new SQLGameDAO();
+        }
+        catch(DataAccessException e){
+            userDAO = new MemoryUserDAO();
+            authDAO = new MemoryAuthDAO();
+            gameDAO = new MemoryGameDAO();
+        }
 
+        clearService = new ClearService(authDAO, userDAO, gameDAO);
+        userService = new UserService(userDAO, authDAO);
+        GameService gameService = new GameService(gameDAO);
+        userHandler = new UserHandler(userService);
+        gameHandler = new GameHandler(userService, gameService);
+    }
 
 
 

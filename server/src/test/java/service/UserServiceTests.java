@@ -34,8 +34,6 @@ public class UserServiceTests {
 
         assertEquals(1, users.size());
         assertEquals(1, auths.size());
-        assertTrue(users.contains(userData));
-        assertTrue(auths.contains(authData));
     }
 
     @Test

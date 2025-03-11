@@ -32,8 +32,17 @@ public class GameDAOTests {
     @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void createGame(Class<? extends GameDAO> dbClass) throws DataAccessException {
         GameDAO gameDAO = getGameDAO(dbClass);
-        var gameData = new GameData(0, "", "", "idk", new ChessGame());
+        var gameData = new GameData(0, null, null, "idk", new ChessGame());
         assertDoesNotThrow(() -> gameDAO.createGame(gameData));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
+    void noDuplicateGames(Class<? extends GameDAO> dbClass) throws DataAccessException {
+        GameDAO gameDAO = getGameDAO(dbClass);
+        var gameData = new GameData(0, null, null, "idk", new ChessGame());
+        gameDAO.createGame(gameData);
+        assertThrows(DataAccessException.class,() -> gameDAO.createGame(gameData));
     }
 
 
@@ -42,9 +51,18 @@ public class GameDAOTests {
     @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void getGame(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
-        var expected = gameDAO.createGame(new GameData(0, "", "", "idk", new ChessGame()));
+        var expected = gameDAO.createGame(
+                new GameData(0, null, null, "idk", new ChessGame())
+        );
         var actual = gameDAO.getGame(expected.gameID());
         assertGameDataEqual(expected, actual);
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
+    void gameDoesNotExist(Class<? extends GameDAO> dbClass) throws DataAccessException{
+        GameDAO gameDAO = getGameDAO(dbClass);
+        assertEquals(null, gameDAO.getGame(0));
     }
 
     @ParameterizedTest
@@ -52,12 +70,24 @@ public class GameDAOTests {
     void listGames(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
         List<GameData> expected = new ArrayList<>();
-        expected.add(gameDAO.createGame(new GameData(0, "", "", "idk", new ChessGame())));
-        expected.add(gameDAO.createGame(new GameData(0, "", "", "Chess Masters", new ChessGame())));
-        expected.add(gameDAO.createGame(new GameData(0, "", "", "Chess Duels", new ChessGame())));
-
+        expected.add(gameDAO.createGame(
+                new GameData(0, null, null, "idk", new ChessGame()))
+        );
+        expected.add(gameDAO.createGame(
+                new GameData(0, null, null, "Chess Masters", new ChessGame()))
+        );
+        expected.add(gameDAO.createGame(
+                new GameData(0, null, null, "Chess Duels", new ChessGame()))
+        );
         var actual = gameDAO.listGames();
         assertGameCollectionEqual(expected, actual);
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
+    void noGamesToList(Class<? extends GameDAO> dbClass) throws DataAccessException{
+        GameDAO gameDAO = getGameDAO(dbClass);
+        assertEquals(0, gameDAO.listGames().size());
     }
 
     @ParameterizedTest
@@ -65,9 +95,15 @@ public class GameDAOTests {
     void deleteGame(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
         List<GameData> expected = new ArrayList<>();
-        var deleteGame = gameDAO.createGame(new GameData(0, "", "", "idk", new ChessGame()));
-        expected.add(gameDAO.createGame(new GameData(0, "", "", "Chess Masters", new ChessGame())));
-        expected.add(gameDAO.createGame(new GameData(0, "", "", "Chess Duels", new ChessGame())));
+        var deleteGame = gameDAO.createGame(
+                new GameData(0, null, null, "idk", new ChessGame())
+        );
+        expected.add(gameDAO.createGame(
+                new GameData(0, null, null, "Chess Masters", new ChessGame()))
+        );
+        expected.add(gameDAO.createGame(
+                new GameData(0, null, null, "Chess Duels", new ChessGame()))
+        );
 
         gameDAO.deleteGame(deleteGame.gameID());
 
@@ -77,11 +113,24 @@ public class GameDAOTests {
 
     @ParameterizedTest
     @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
+    void noGameToDelete(Class<? extends GameDAO> dbClass) throws DataAccessException{
+        GameDAO gameDAO = getGameDAO(dbClass);
+        assertThrows(DataAccessException.class, () -> gameDAO.deleteGame(0));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void clearGames(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
-        gameDAO.createGame(new GameData(0, "", "", "idk", new ChessGame()));
-        gameDAO.createGame(new GameData(0, "", "", "Chess Masters", new ChessGame()));
-        gameDAO.createGame(new GameData(0, "", "", "Chess Duels", new ChessGame()));
+        gameDAO.createGame(
+                new GameData(0, null, null, "idk", new ChessGame())
+        );
+        gameDAO.createGame(
+                new GameData(0, null, null, "Chess Masters", new ChessGame())
+        );
+        gameDAO.createGame(
+                new GameData(0, null, null, "Chess Duels", new ChessGame())
+        );
         gameDAO.clearGames();
         var actual = gameDAO.listGames();
         assertEquals(0, actual.size());
@@ -91,7 +140,9 @@ public class GameDAOTests {
     @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void updateGame(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
-        var gameData = gameDAO.createGame(new GameData(0, "", "", "idk", new ChessGame()));
+        var gameData = gameDAO.createGame(
+                new GameData(0, null, null, "idk", new ChessGame())
+        );
         var whiteUsername = "sonic_the_hedgehog";
         var blackUsername = "shadow_the_hedgehog";
         var move = new ChessMove(new ChessPosition(2,1), new ChessPosition(3,1), null);
@@ -121,6 +172,14 @@ public class GameDAOTests {
         );
         actual = gameDAO.getGame(gameData.gameID());
         assertGameDataEqual(expected, actual);
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
+    void noGameToUpdate(Class<? extends GameDAO> dbClass) throws DataAccessException{
+        GameDAO gameDAO = getGameDAO(dbClass);
+        var gameData = new GameData(0, null, null, "idk", new ChessGame());
+        assertThrows(DataAccessException.class, () -> gameDAO.updateGame(gameData));
     }
 
 

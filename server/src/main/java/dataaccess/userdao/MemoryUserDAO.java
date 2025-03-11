@@ -2,6 +2,7 @@ package dataaccess.userdao;
 
 import dataaccess.DataAccessException;
 import model.UserData;
+import service.ResponseException;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +13,9 @@ public class MemoryUserDAO implements UserDAO{
 
     @Override
     public UserData createUser(UserData userData) throws DataAccessException {
+        if(users.containsKey(userData.username())){
+            throw new DataAccessException("Existing User");
+        }
         users.put(userData.username(), userData);
         return userData;
     }
@@ -23,7 +27,9 @@ public class MemoryUserDAO implements UserDAO{
 
     @Override
     public void deleteUser(String username) throws DataAccessException {
-        users.remove(username);
+        if(users.remove(username) == null){
+            throw new DataAccessException("Can't delete a user that does not exist");
+        }
     }
 
     @Override

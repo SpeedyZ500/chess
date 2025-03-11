@@ -35,11 +35,27 @@ public class UserDAOTests {
 
     @ParameterizedTest
     @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
+    void noDuplicate(Class<? extends UserDAO> dbClass) throws DataAccessException {
+        UserDAO userDAO = getUserDAO(dbClass);
+        var userData = new UserData("bill_nye_science", "12345", "billnye@scienceguy.com");
+        userDAO.createUser(userData);
+        assertThrows(DataAccessException.class, () -> userDAO.createUser(userData));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
     void getUser(Class<? extends UserDAO> dbClass) throws DataAccessException{
         UserDAO userDAO = getUserDAO(dbClass);
         var expected = userDAO.createUser(new UserData("bill_nye_science", "12345", "billnye@scienceguy.com"));
         var actual = userDAO.getUser(expected.username());
         assertUserDataEqual(expected, actual);
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
+    void noUser(Class<? extends UserDAO> dbClass) throws DataAccessException{
+        UserDAO userDAO = getUserDAO(dbClass);
+        assertEquals(null,   userDAO.getUser("bill_nye_science"));
     }
 
     @ParameterizedTest
@@ -52,7 +68,18 @@ public class UserDAOTests {
         expected.put("ash_catch_em", userDAO.createUser(new UserData("ash_catch_em", "peek@U4L!fe", "ash@pokemon.com")));
 
         var actual = userDAO.listUsers();
-        assertUserCollectionEqual(expected.values(), actual);
+        Map<String, UserData> actualMap = new HashMap<>();
+        actual.forEach((user) -> {
+            actualMap.put(user.username(), user);
+        });
+        assertUserCollectionEqual(expected.values(), actualMap.values());
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
+    void noUsers(Class<? extends UserDAO> dbClass) throws DataAccessException{
+        UserDAO userDAO = getUserDAO(dbClass);
+        assertEquals(0, userDAO.listUsers().size());
     }
 
     @ParameterizedTest
@@ -69,6 +96,15 @@ public class UserDAOTests {
         var actual = userDAO.listUsers();
         assertUserCollectionEqual(expected.values(), actual);
     }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
+    void noUserToDelete(Class<? extends UserDAO> dbClass) throws DataAccessException{
+        UserDAO userDAO = getUserDAO(dbClass);
+        assertThrows(DataAccessException.class, () -> userDAO.deleteUser("what"));
+    }
+
+
 
     @ParameterizedTest
     @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})

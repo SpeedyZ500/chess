@@ -35,11 +35,27 @@ public class AuthDAOTests {
 
     @ParameterizedTest
     @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
+    void noProvided(Class<? extends AuthDAO> dbClass) throws DataAccessException {
+        AuthDAO authDAO = getAuthDAO(dbClass);
+        var authData = new AuthData("", null);
+        assertThrows(DataAccessException.class, () -> authDAO.createAuth(authData));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
     void getAuth(Class<? extends AuthDAO> dbClass) throws DataAccessException{
         AuthDAO authDAO = getAuthDAO(dbClass);
         var expected = authDAO.createAuth(new AuthData("", "bill_nye_science"));
         var actual = authDAO.getAuth(expected.authToken());
         assertAuthDataEqual(expected, actual);
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
+    void missingAuth(Class<? extends AuthDAO> dbClass) throws DataAccessException{
+        AuthDAO authDAO = getAuthDAO(dbClass);
+        var actual = authDAO.getAuth("why");
+        assertEquals(null, actual);
     }
 
     @ParameterizedTest
@@ -62,6 +78,15 @@ public class AuthDAOTests {
 
     @ParameterizedTest
     @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
+    void emptyAuths(Class<? extends AuthDAO> dbClass) throws DataAccessException {
+        AuthDAO authDAO = getAuthDAO(dbClass);
+        var actual = authDAO.listAuths();
+        assertEquals(0, actual.size());
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
     void deleteAuth(Class<? extends AuthDAO> dbClass) throws DataAccessException{
         AuthDAO authDAO = getAuthDAO(dbClass);
         List<AuthData> expected = new ArrayList<>();
@@ -77,6 +102,14 @@ public class AuthDAOTests {
         actual.forEach((auth) -> actualMap.put(auth.authToken(), auth));
 
         assertAuthCollectionEqual(expectedMap.values(), actualMap.values());
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {MemoryAuthDAO.class, SQLAuthDAO.class})
+    void noAuthToDelete(Class<? extends AuthDAO> dbClass) throws DataAccessException{
+        AuthDAO authDAO = getAuthDAO(dbClass);
+        assertThrows(DataAccessException.class, () -> authDAO.deleteAuth("IDK"));
 
     }
 

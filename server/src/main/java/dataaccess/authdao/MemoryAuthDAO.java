@@ -14,6 +14,9 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public AuthData createAuth(AuthData authData) throws DataAccessException {
+        if(authData.username() == null){
+            throw new DataAccessException("No User");
+        }
         authData = new AuthData(UUID.randomUUID().toString(), authData.username());
         auths.put(authData.authToken(), authData);
         return authData;
@@ -21,7 +24,9 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-        auths.remove(authToken);
+        if(auths.remove(authToken) == null){
+            throw new DataAccessException("Can't remove what's not there");
+        }
     }
 
     @Override

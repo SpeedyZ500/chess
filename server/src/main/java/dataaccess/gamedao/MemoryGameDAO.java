@@ -13,6 +13,9 @@ public class MemoryGameDAO implements GameDAO {
     HashMap<Integer, GameData> games = new HashMap<>();
     @Override
     public GameData createGame(GameData gameData) throws DataAccessException {
+        if(gameExists(gameData.gameName())){
+            throw new DataAccessException("No Games with duplicate names");
+        }
         gameData = new GameData(
                 nextId++,
                 gameData.whiteUsername(),
@@ -20,6 +23,7 @@ public class MemoryGameDAO implements GameDAO {
                 gameData.gameName(),
                 gameData.game()
         );
+
         games.put(gameData.gameID(), gameData);
         return gameData;
     }
@@ -36,13 +40,18 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public GameData updateGame(GameData gameData) throws DataAccessException {
+        if(getGame(gameData.gameID()) == null){
+            throw new DataAccessException("Can't update a game that doesn't exit.");
+        }
         games.put(gameData.gameID(), gameData);
         return gameData;
     }
 
     @Override
     public void deleteGame(Integer gameID) throws DataAccessException {
-        games.remove(gameID);
+        if(games.remove(gameID) == null){
+            throw new DataAccessException("Can't delete what doesn't exist");
+        }
     }
 
     @Override
@@ -51,7 +60,7 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public boolean gameExists(String gameName) {
+    public boolean gameExists(String gameName) throws DataAccessException {
         Iterator<GameData> iter = games.values().iterator();
         while(iter.hasNext()){
             GameData curr = iter.next();
