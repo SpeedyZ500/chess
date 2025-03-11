@@ -15,9 +15,9 @@ import java.util.List;
 
 import static java.sql.Types.NULL;
 
-public class SQLUserDAO implements UserDAO {
+public class SQLUserDAO extends SQLDataAccess implements UserDAO {
     public SQLUserDAO() throws DataAccessException {
-        configureDatabase();
+        configureDatabase(createStatements);
     }
 
     @Override
@@ -27,26 +27,7 @@ public class SQLUserDAO implements UserDAO {
         return userData;
     }
 
-    private void executeUpdate(String statement, Object... params) throws DataAccessException{
-        try(var conn = DatabaseManager.getConnection()){
-            try (var ps = conn.prepareStatement(statement)) {
-                for(var i = 0; i < params.length; i++){
-                    var param = params[i];
-                    if(param instanceof String p) ps.setString(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-            }
-        }
-        catch(SQLException e){
-            if(e.getErrorCode() == 1082){ //1082 is the duplicate code
-                throw new DataAccessException("Existing User");
-            }
-            else{
-                throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
-            }
-        }
-    }
+
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
@@ -88,7 +69,6 @@ public class SQLUserDAO implements UserDAO {
     public void clearUsers() throws DataAccessException {
         var statement = "TRUNCATE user";
         executeUpdate(statement);
-
     }
 
     @Override
@@ -122,17 +102,5 @@ public class SQLUserDAO implements UserDAO {
             )
             """
     };
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()){
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        }
-        catch(SQLException e){
-            throw new DataAccessException(String.format("Unable to configure database: %s", e.getMessage()));
-        }
-    }
+
 }
