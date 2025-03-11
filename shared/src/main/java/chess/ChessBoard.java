@@ -190,19 +190,6 @@ public class ChessBoard {
         movePiece(move.getStartPosition(), move.getEndPosition(), move.getPromotionPiece());
     }
 
-    public String boardVisualizer(){
-        StringBuilder output = new StringBuilder();
-        for(int i = 8; i > 0; i--){
-            output.append("|");
-            for(int j = 1; j < 9; j++){
-                ChessPiece piece = this.getPiece(new ChessPosition(i, j));
-                output.append(piece != null ? piece.pieceRep() : " ");
-                output.append("|");
-            }
-            output.append("\n");
-        }
-        return output.toString();
-    }
 
     @Override
     public String toString() {
