@@ -9,17 +9,20 @@ import java.util.*;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private final Set<Placement> board;
     private final List<ChessBoard> history;
     private ChessMove lastMove = null;
+
+    private final Map<ChessPosition, ChessPiece> board;
 
 
 
     public ChessBoard() {
-        this.board = new HashSet<>();
         this.history = new ArrayList<>();
+        this.board = new HashMap<>();
     }
-    public ChessBoard(Set<Placement> board){
+
+
+    public ChessBoard(Map<ChessPosition, ChessPiece> board){
         this.board = board;
         this.history = new ArrayList<>();
     }
@@ -45,7 +48,12 @@ public class ChessBoard {
      * @return board.iterator() an iterator used to track piece positions
      */
     public Iterator<Placement> iterator(){
-        return board.iterator();
+        Set<Placement> mapAsPlacementSet = new HashSet<>();
+        Set<ChessPosition> keys = board.keySet();
+        for(ChessPosition key : keys){
+            mapAsPlacementSet.add(new Placement(key, board.get(key)));
+        }
+        return mapAsPlacementSet.iterator();
     }
 
 
@@ -69,7 +77,7 @@ public class ChessBoard {
         if(outOfBounds(position)){
             throw new InvalidPositionException("Chess Piece out of bounds");
         }
-        this.board.add(new Placement(position, piece));
+        this.board.put(position, piece);
     }
 
     public void addPiece(Placement place){
@@ -90,14 +98,7 @@ public class ChessBoard {
         if(outOfBounds(position)){
             throw new InvalidPositionException("Chess Piece out of bounds");
         }
-        ChessPiece piece = null;
-        for (Placement place : board) {
-            if(place.getPosition().equals(position) ){
-                piece = place.getPiece();
-                break;
-            }
-        }
-        return piece;
+        return board.get(position);
     }
 
     /**
@@ -163,29 +164,26 @@ public class ChessBoard {
         int file = endCol - startCol;
         int startRow = startPosition.getRow();
         if(endPiece != null){
-            board.remove(new Placement(endPosition, endPiece));
+            board.remove(startPosition);
+            //board.remove(new Placement(endPosition, endPiece));
         } else if (thisPiece.getPieceType() == ChessPiece.PieceType.PAWN && startCol != endCol) {
-            ChessPosition checkPosition = new ChessPosition(startRow, endCol);
-            ChessPiece checkPiece = getPiece(checkPosition);
-            if(checkPiece != null){
-                board.remove(new Placement(checkPosition, checkPiece));
-            }
+            board.remove(new ChessPosition(startRow, endCol));
         }else if(thisPiece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(file) == 2){
             int dir = file/Math.abs(file);
             int rookCol = endCol - dir;
             ChessPosition rookPosition = new ChessPosition(startRow, dir > 0 ? 8 : 1);
             ChessPiece rook = getPiece(rookPosition);
             if(rook != null) {
-                board.remove(new Placement(rookPosition, rook));
-                board.add(new Placement(new ChessPosition(startRow, rookCol), rook));
+                board.remove(rookPosition);
+                board.put(new ChessPosition(startRow, rookCol), rook);
             }
         }
         if(promotion != null){
-            board.add(new Placement(endPosition, new ChessPiece(thisPiece.getTeamColor(), promotion)));
+            board.put(endPosition, new ChessPiece(thisPiece.getTeamColor(), promotion));
         }else{
-            board.add(new Placement(endPosition, thisPiece));
+            board.put(endPosition, thisPiece);
         }
-        board.remove(new Placement(startPosition, thisPiece));
+        board.remove(startPosition);
         lastMove = new ChessMove(startPosition, endPosition, null);
     }
     public void movePiece(ChessMove move){
