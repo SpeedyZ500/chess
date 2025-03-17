@@ -11,7 +11,7 @@ import java.util.*;
 public class ChessBoard {
     private final Set<Placement> board;
     private final List<ChessBoard> history;
-
+    private ChessMove lastMove = null;
 
 
 
@@ -36,7 +36,7 @@ public class ChessBoard {
 
     @Override
     public int hashCode() {
-        return Objects.hash(board/*, history*/);
+        return Objects.hash(board, history, lastMove);
     }
 
 
@@ -107,6 +107,7 @@ public class ChessBoard {
     public void resetBoard() {
         board.clear();
         history.clear();
+        lastMove = null;
         resetBack(ChessGame.TeamColor.WHITE, 1);
         resetPawns(ChessGame.TeamColor.WHITE, 2);
         resetPawns(ChessGame.TeamColor.BLACK, 7);
@@ -185,9 +186,14 @@ public class ChessBoard {
             board.add(new Placement(endPosition, thisPiece));
         }
         board.remove(new Placement(startPosition, thisPiece));
+        lastMove = new ChessMove(startPosition, endPosition, null);
     }
     public void movePiece(ChessMove move){
         movePiece(move.getStartPosition(), move.getEndPosition(), move.getPromotionPiece());
+    }
+
+    public ChessMove getLastMove(){
+        return lastMove;
     }
 
 
