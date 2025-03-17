@@ -85,7 +85,7 @@ public class ChessPiece {
         }
         return moves;
     }
-    
+
 
     @Override
     public String toString() {
