@@ -104,16 +104,16 @@ public class PawnMovesCalculator implements ChessMovesCalculator {
                 if( checkPiece != null && (checkPiece.getPieceType() == piece.getPieceType() &&
                         checkPiece.getTeamColor() != piece.getTeamColor())) {
                     int checkRow = row + (direction * 2);
-                    Iterator<ChessBoard> hist = board.history();
-                    ChessBoard prev = new ChessBoard();
-                    while (hist.hasNext()) {
-                        prev = hist.next();
-                    }
+
+                    ChessMove prevMove = board.getLastMove();
                     ChessPosition prevPosition = new ChessPosition(checkRow, checkCol);
                     ChessPosition endPosition = new ChessPosition(row + direction, checkCol);
-                    ChessPiece pawnPosition = prev.getPiece(prevPosition);
-                    if ((board.getPiece(prevPosition) == null) &&
-                            (prev.getPiece(checkPosition) == null) &&
+                    ChessMove checkMove = new ChessMove(prevPosition, checkPosition, null);
+                    if(prevMove == null){
+                        continue;
+                    }
+                    ChessPiece pawnPosition = board.getPiece(checkPosition);
+                    if(checkMove.equals(prevMove) &&
                             pawnPosition != null && pawnPosition.getPieceType() == ChessPiece.PieceType.PAWN
                             && pawnPosition.getTeamColor() != piece.getTeamColor() &&
                             (board.getPiece(endPosition) == null)
