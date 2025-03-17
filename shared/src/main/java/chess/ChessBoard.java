@@ -157,16 +157,12 @@ public class ChessBoard {
         }
         history.add(prev);
         ChessPiece thisPiece = getPiece(startPosition);
-        ChessPiece endPiece = getPiece(endPosition);
 
         int endCol = endPosition.getColumn();
         int startCol = startPosition.getColumn();
         int file = endCol - startCol;
         int startRow = startPosition.getRow();
-        if(endPiece != null){
-            board.remove(startPosition);
-            //board.remove(new Placement(endPosition, endPiece));
-        } else if (thisPiece.getPieceType() == ChessPiece.PieceType.PAWN && startCol != endCol) {
+        if (thisPiece.getPieceType() == ChessPiece.PieceType.PAWN && startCol != endCol) {
             board.remove(new ChessPosition(startRow, endCol));
         }else if(thisPiece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(file) == 2){
             int dir = file/Math.abs(file);
