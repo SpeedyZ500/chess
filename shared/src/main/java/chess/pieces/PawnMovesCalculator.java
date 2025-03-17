@@ -95,7 +95,9 @@ public class PawnMovesCalculator implements ChessMovesCalculator {
         List<ChessMove> moves = new ArrayList<>();
         int row = position.getRow();
         int col = position.getColumn();
-        if(row == enPassantRow){
+        ChessMove prevMove = board.getLastMove();
+
+        if(row == enPassantRow && prevMove != null){
             for(int i = -1; i <= 1; i += 2){
                 int checkCol = col + i;
                 ChessPosition checkPosition = new ChessPosition(row, checkCol);
@@ -105,13 +107,9 @@ public class PawnMovesCalculator implements ChessMovesCalculator {
                         checkPiece.getTeamColor() != piece.getTeamColor())) {
                     int checkRow = row + (direction * 2);
 
-                    ChessMove prevMove = board.getLastMove();
                     ChessPosition prevPosition = new ChessPosition(checkRow, checkCol);
                     ChessPosition endPosition = new ChessPosition(row + direction, checkCol);
                     ChessMove checkMove = new ChessMove(prevPosition, checkPosition, null);
-                    if(prevMove == null){
-                        continue;
-                    }
                     ChessPiece pawnPosition = board.getPiece(checkPosition);
                     if(checkMove.equals(prevMove) &&
                             pawnPosition != null && pawnPosition.getPieceType() == ChessPiece.PieceType.PAWN
