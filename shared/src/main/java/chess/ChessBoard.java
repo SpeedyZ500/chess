@@ -39,7 +39,7 @@ public class ChessBoard {
 
     @Override
     public int hashCode() {
-        return Objects.hash(board, history, lastMove);
+        return Objects.hash(board, /*history,*/ lastMove);
     }
 
 
@@ -190,12 +190,12 @@ public class ChessBoard {
         return lastMove;
     }
 
-
     @Override
     public String toString() {
         return "ChessBoard{" +
-                "board=" + board +
-                ", history=" + history +
+                "history=" + history +
+                ", lastMove=" + lastMove +
+                ", board=" + board +
                 '}';
     }
 }

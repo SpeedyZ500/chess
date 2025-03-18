@@ -4,6 +4,7 @@ package dataaccess;
 
 import com.google.gson.Gson;
 import dataaccess.gamedao.GameDAO;
+import gson.GsonConfig;
 import model.AuthData;
 import model.GameData;
 
@@ -17,15 +18,18 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class SQLGameDAO extends SQLDataAccess implements GameDAO {
+    private final Gson gson;
 
     public SQLGameDAO() throws DataAccessException {
         configureDatabase(createStatements);
+        gson = GsonConfig.createGson();
+
     }
 
     @Override
     public GameData createGame(GameData gameData) throws DataAccessException {
         var statement = "INSERT INTO game (gameName, json) VALUES (?, ?)";
-        var json = new Gson().toJson(gameData);
+        var json = gson.toJson(gameData);
         var id = executeUpdate(statement, gameData.gameName(), json);
         return new GameData(id, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
     }
@@ -74,7 +78,7 @@ public class SQLGameDAO extends SQLDataAccess implements GameDAO {
             throw new DataAccessException("Game does not Exist");
         }
         var statement = "UPDATE game SET json=? WHERE  gameID=?";
-        var json = new Gson().toJson(gameData);
+        var json = gson.toJson(gameData);
         executeUpdate(statement, json, gameData.gameID());
         return gameData;
     }
@@ -116,7 +120,7 @@ public class SQLGameDAO extends SQLDataAccess implements GameDAO {
     private GameData readGame(ResultSet rs) throws SQLException{
         var id = rs.getInt("gameID");
         var json = rs.getString("json");
-        var game = new Gson().fromJson(json, GameData.class);
+        var game = gson.fromJson(json, GameData.class);
         return game.setId(id);
     }
 

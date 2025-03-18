@@ -62,7 +62,7 @@ public class GameDAOTests {
     @ValueSource(classes = {MemoryGameDAO.class, SQLGameDAO.class})
     void gameDoesNotExist(Class<? extends GameDAO> dbClass) throws DataAccessException{
         GameDAO gameDAO = getGameDAO(dbClass);
-        assertEquals(null, gameDAO.getGame(0));
+        assertNull( gameDAO.getGame(0));
     }
 
     @ParameterizedTest
