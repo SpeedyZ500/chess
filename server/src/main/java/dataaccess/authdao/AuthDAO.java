@@ -1,6 +1,6 @@
 package dataaccess.authdao;
 
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import model.AuthData;
 
 import java.util.Collection;

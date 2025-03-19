@@ -1,8 +1,9 @@
 package service;
 
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import dataaccess.authdao.AuthDAO;
 import dataaccess.userdao.UserDAO;
+import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
@@ -17,7 +18,7 @@ public class UserService {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }
-    public Collection<UserData> listUsers() throws ResponseException{
+    public Collection<UserData> listUsers() throws ResponseException {
         try{
             return userDAO.listUsers();
         } catch (Exception e) {

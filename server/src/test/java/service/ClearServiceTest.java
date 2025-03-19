@@ -1,13 +1,14 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import dataaccess.authdao.AuthDAO;
 import dataaccess.authdao.MemoryAuthDAO;
 import dataaccess.gamedao.GameDAO;
 import dataaccess.gamedao.MemoryGameDAO;
 import dataaccess.userdao.MemoryUserDAO;
 import dataaccess.userdao.UserDAO;
+import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -35,7 +36,7 @@ public class ClearServiceTest {
     }
 
     @Test
-    void clear() throws ResponseException{
+    void clear() throws ResponseException {
         CLEAR_SERVICE.clear();
         try{
             assertEquals(0, AUTH_DAO.listAuths().size());

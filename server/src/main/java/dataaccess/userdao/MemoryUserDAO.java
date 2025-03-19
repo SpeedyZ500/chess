@@ -1,12 +1,10 @@
 package dataaccess.userdao;
 
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import model.UserData;
-import service.ResponseException;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 public class MemoryUserDAO implements UserDAO{
     HashMap<String, UserData> users = new HashMap<>();

@@ -1,12 +1,11 @@
 package dataaccess.gamedao;
 
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import model.GameData;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 public class MemoryGameDAO implements GameDAO {
     private int nextId = 1;

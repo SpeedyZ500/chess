@@ -1,7 +1,6 @@
 package server;
 
-import com.google.gson.Gson;
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;
@@ -11,10 +10,9 @@ import dataaccess.gamedao.GameDAO;
 import dataaccess.gamedao.MemoryGameDAO;
 import dataaccess.userdao.MemoryUserDAO;
 import dataaccess.userdao.UserDAO;
-import gson.GsonConfig;
 import service.ClearService;
 import service.GameService;
-import service.ResponseException;
+import exception.ResponseException;
 import service.UserService;
 import spark.*;
 

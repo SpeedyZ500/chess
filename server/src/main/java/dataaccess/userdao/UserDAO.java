@@ -1,6 +1,6 @@
 package dataaccess.userdao;
 
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import model.UserData;
 
 import java.util.Collection;

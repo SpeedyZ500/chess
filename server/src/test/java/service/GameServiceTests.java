@@ -11,6 +11,7 @@ import dataaccess.gamedao.MemoryGameDAO;
 import dataaccess.userdao.MemoryUserDAO;
 import dataaccess.userdao.UserDAO;
 
+import exception.ResponseException;
 import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ public class GameServiceTests {
     static final GameService GAME_SERVICE = new GameService(GAME_DAO);
 
     @BeforeEach
-    void clear() throws ResponseException{
+    void clear() throws ResponseException {
         CLEAR_SERVICE.clear();
     }
 

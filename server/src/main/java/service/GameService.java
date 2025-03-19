@@ -1,8 +1,9 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import dataaccess.gamedao.GameDAO;
+import exception.ResponseException;
 import model.GameData;
 
 import java.util.Collection;
@@ -12,7 +13,7 @@ public class GameService {
     public GameService(GameDAO gameDAO){
         this.gameDAO = gameDAO;
     }
-    public Collection<GameData> listGames() throws ResponseException{
+    public Collection<GameData> listGames() throws ResponseException {
         try{
             return this.gameDAO.listGames();
         }

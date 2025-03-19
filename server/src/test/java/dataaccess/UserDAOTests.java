@@ -2,6 +2,7 @@ package dataaccess;
 
 import dataaccess.userdao.UserDAO;
 import dataaccess.userdao.MemoryUserDAO;
+import exception.DataAccessException;
 import model.UserData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserDAOTests {
 
-    private UserDAO getUserDAO(Class<? extends UserDAO> userDatabaseClass) throws DataAccessException{
+    private UserDAO getUserDAO(Class<? extends UserDAO> userDatabaseClass) throws DataAccessException {
         UserDAO db;
         if(userDatabaseClass.equals(SQLUserDAO.class)){
             db = new SQLUserDAO();

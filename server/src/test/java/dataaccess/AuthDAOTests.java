@@ -2,6 +2,7 @@ package dataaccess;
 
 import dataaccess.authdao.AuthDAO;
 import dataaccess.authdao.MemoryAuthDAO;
+import exception.DataAccessException;
 import model.AuthData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthDAOTests {
 
-    private AuthDAO getAuthDAO(Class<? extends AuthDAO> authDatabaseClass) throws DataAccessException{
+    private AuthDAO getAuthDAO(Class<? extends AuthDAO> authDatabaseClass) throws DataAccessException {
         AuthDAO db;
         if(authDatabaseClass.equals(SQLAuthDAO.class)){
             db = new SQLAuthDAO();

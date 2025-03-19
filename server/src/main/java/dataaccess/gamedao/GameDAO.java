@@ -1,6 +1,6 @@
 package dataaccess.gamedao;
 
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import model.GameData;
 
 import java.util.Collection;

@@ -3,13 +3,12 @@ package server;
 import com.google.gson.Gson;
 import model.GameData;
 import service.GameService;
-import service.ResponseException;
+import exception.ResponseException;
 import service.UserService;
 import spark.Request;
 import spark.Response;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 public class GameHandler {
     UserService userService;

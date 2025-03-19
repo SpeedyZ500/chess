@@ -3,17 +3,13 @@ package dataaccess;
 // but it wouldn't let me because the methods for DatabaseManager are default
 
 import dataaccess.userdao.UserDAO;
-import model.AuthData;
+import exception.DataAccessException;
 import model.UserData;
-import service.ResponseException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
-import static java.sql.Types.NULL;
 
 public class SQLUserDAO extends SQLDataAccess implements UserDAO {
     public SQLUserDAO() throws DataAccessException {

@@ -5,6 +5,7 @@ import chess.ChessMove;
 import chess.ChessPosition;
 import dataaccess.gamedao.GameDAO;
 import dataaccess.gamedao.MemoryGameDAO;
+import exception.DataAccessException;
 import model.GameData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GameDAOTests {
 
-    private GameDAO getGameDAO(Class<? extends GameDAO> gameDatabaseClass) throws DataAccessException{
+    private GameDAO getGameDAO(Class<? extends GameDAO> gameDatabaseClass) throws DataAccessException {
         GameDAO db;
         if(gameDatabaseClass.equals(SQLGameDAO.class)){
             db = new SQLGameDAO();

@@ -2,18 +2,14 @@ package dataaccess;
 //really wanted to put this in the authdao subpackage,
 // but it wouldn't let me because the methods for DatabaseManager are default
 import dataaccess.authdao.AuthDAO;
+import exception.DataAccessException;
 import model.AuthData;
-import service.ResponseException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 
 public class SQLAuthDAO extends SQLDataAccess implements AuthDAO {

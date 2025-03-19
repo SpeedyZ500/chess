@@ -3,7 +3,7 @@ package server;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.UserData;
-import service.ResponseException;
+import exception.ResponseException;
 import service.UserService;
 import spark.Request;
 import spark.Response;

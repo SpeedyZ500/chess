@@ -4,18 +4,14 @@ package dataaccess;
 
 import com.google.gson.Gson;
 import dataaccess.gamedao.GameDAO;
+import exception.DataAccessException;
 import gson.GsonConfig;
-import model.AuthData;
 import model.GameData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 public class SQLGameDAO extends SQLDataAccess implements GameDAO {
     private final Gson gson;

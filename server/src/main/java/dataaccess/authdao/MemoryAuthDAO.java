@@ -1,11 +1,10 @@
 package dataaccess.authdao;
 
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import model.AuthData;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO{
