@@ -21,6 +21,7 @@ public class ServerFacadeTests {
     }
 
     @BeforeEach
+    @AfterEach
     public void clear() throws ResponseException {
         facade.clear();
     }
@@ -31,14 +32,13 @@ public class ServerFacadeTests {
     }
 
     public String registrationHelper() throws ResponseException{
-        AuthData result = facade.register()
+        AuthData result = facade.register("username", "password", "user@email.com");
+        return result.authToken();
     }
 
-
-
     @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
+    public void registerPositive() throws ResponseException{
+        Assertions.assertDoesNotThrow(this::registrationHelper);
     }
 
 }
