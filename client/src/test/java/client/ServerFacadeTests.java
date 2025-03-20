@@ -59,4 +59,17 @@ public class ServerFacadeTests {
         Assertions.assertThrows(ResponseException.class, () -> facade.logout(authToken + "badData"));
     }
 
+    @Test
+    public void loginPositive() throws ResponseException {
+        registrationHelper();
+        Assertions.assertDoesNotThrow(() -> facade.login("username", "password"));
+    }
+
+    @Test
+    public void loginNegatives() throws ResponseException {
+        Assertions.assertThrows(ResponseException.class, () -> facade.login("username", "password"));
+        registrationHelper();
+        Assertions.assertThrows(ResponseException.class, () -> facade.login("username", "p4ssword"));
+    }
+
 }
