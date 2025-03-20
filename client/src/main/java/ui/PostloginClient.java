@@ -1,9 +1,11 @@
 package ui;
 
+import exception.ResponseException;
 import model.GameData;
 import server.ServerFacade;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PostloginClient implements Client{
@@ -21,6 +23,27 @@ public class PostloginClient implements Client{
     }
 
     @Override
+    public String eval(String input){
+        try {
+            var tokens = input.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch(cmd){
+                case "logout" -> logout();
+                default -> help();
+            };
+        }
+        catch (ResponseException ex) {
+            return ex.getMessage();
+        }
+    }
+
+    public String logout() throws ResponseException{
+        server.logout(authToken);
+        return "transition; Good by";
+    }
+
+    @Override
     public String help() {
         return "";
     }
@@ -35,5 +58,10 @@ public class PostloginClient implements Client{
     @Override
     public Client transition() {
         return new PreloginClient(serverUrl, server);
+    }
+
+    @Override
+    public String terminalState(){
+        return "[LOGGED_IN]";
     }
 }
