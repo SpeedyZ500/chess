@@ -20,6 +20,7 @@ public class ServerFacadeTests {
         facade = new ServerFacade("http://localhost:" + port);
     }
 
+
     @BeforeEach
     @AfterEach
     public void clear() throws ResponseException {
@@ -71,5 +72,26 @@ public class ServerFacadeTests {
         registrationHelper();
         Assertions.assertThrows(ResponseException.class, () -> facade.login("username", "p4ssword"));
     }
+
+    public int createGame(String authToken) throws ResponseException{
+        return facade.createGame("newGame", authToken);
+    }
+
+    @Test
+    public void createGamePositive() throws ResponseException{
+        String authToken = registrationHelper();
+        Assertions.assertDoesNotThrow(() -> createGame(authToken));
+    }
+
+    @Test
+    public void createGameNegatives() throws ResponseException{
+        String authToken = registrationHelper();
+        Assertions.assertThrows(ResponseException.class, () -> createGame(authToken + "badData"));
+        createGame(authToken);
+        Assertions.assertThrows(ResponseException.class,() -> createGame(authToken));
+    }
+
+
+
 
 }
