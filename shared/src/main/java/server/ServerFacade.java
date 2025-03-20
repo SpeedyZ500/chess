@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
-import model.JoinGameRequest;
 import model.UserData;
 
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.Map;
 
 public class ServerFacade {
 
@@ -52,7 +52,17 @@ public class ServerFacade {
         return response.game();
     }
 
-    public void joinGame(JoinGameRequest request) throws ResponseException {
+    public int createGame(String gameName) throws ResponseException{
+        var path = "/game";
+        record gameID (int gameID){};
+        var requestBody = Map.of("name", gameName);
+        var response = this.makeRequest("POST", path, requestBody, gameID.class);
+        return response.gameID();
+    }
+
+
+    public void joinGame(String playerColor, int gameId) throws ResponseException {
+        var request = Map.of("playerColor", playerColor, "gameID", gameId);
         var path = "/game";
         this.makeRequest("PUT", path, request, null);
     }

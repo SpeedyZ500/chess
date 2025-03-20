@@ -2,7 +2,6 @@ package server;
 
 import com.google.gson.Gson;
 import model.GameData;
-import model.JoinGameRequest;
 import service.GameService;
 import exception.ResponseException;
 import service.UserService;
@@ -28,11 +27,12 @@ public class GameHandler {
     }
 
     public Object createGame(Request req, Response res) throws ResponseException {
-        GameData gameData = new Gson().fromJson(req.body(), GameData.class);
-        if(gameData.gameName() == null){
+        record gameName(String name) {};
+        var gameName = new Gson().fromJson(req.body(), gameName.class);
+        if(gameName.name() == null){
             throw new ResponseException(400, "Error: bad request");
         }
-        int gameID = gameService.createGame(gameData.gameName());
+        int gameID = gameService.createGame(gameName.name());
         res.status(200);
         res.body("{\"gameID\": %d}".formatted(gameID));
         return res.body();
@@ -41,6 +41,8 @@ public class GameHandler {
     public Object joinGame(Request req, Response res) throws ResponseException{
         String authToken = req.headers("authorization");
         String username = userService.getUsername(authToken);
+        record JoinGameRequest(String playerColor, int gameID) {
+        }
         JoinGameRequest joinData = new Gson().fromJson(req.body(), JoinGameRequest.class);
         gameService.joinGame(username, joinData.playerColor(), joinData.gameID());
         res.status(200);
