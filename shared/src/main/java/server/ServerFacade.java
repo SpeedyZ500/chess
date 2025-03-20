@@ -2,6 +2,10 @@ package server;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.AuthData;
+import model.GameData;
+import model.JoinGameRequest;
+import model.UserData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,10 +18,46 @@ import java.net.URL;
 public class ServerFacade {
 
     private final String serverUrl;
+    private String authToken;
 
     public ServerFacade(String url) {
         serverUrl = url;
     }
+
+    public void clear() throws ResponseException{
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null);
+    }
+
+    public AuthData register(UserData userData) throws ResponseException {
+        var path = "/user";
+        return this.makeRequest("POST", path, userData, AuthData.class);
+    }
+
+    public AuthData login(UserData userData) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("POST", path, userData, AuthData.class);
+    }
+
+    public void logout() throws ResponseException{
+        var path = "/session";
+        this.makeRequest("DELETE", path, null, null);
+    }
+
+    public GameData[] listGames() throws ResponseException {
+        var path = "/game";
+        record listGameResponse(GameData[] game){
+        }
+        var response = this.makeRequest("GET", path, null, listGameResponse.class);
+        return response.game();
+    }
+
+    public void joinGame(JoinGameRequest request) throws ResponseException {
+        var path = "/game";
+        this.makeRequest("PUT", path, request, null);
+    }
+
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();

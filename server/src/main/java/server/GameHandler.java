@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import model.GameData;
+import model.JoinGameRequest;
 import service.GameService;
 import exception.ResponseException;
 import service.UserService;
@@ -40,8 +41,7 @@ public class GameHandler {
     public Object joinGame(Request req, Response res) throws ResponseException{
         String authToken = req.headers("authorization");
         String username = userService.getUsername(authToken);
-        record JoinGameData(String playerColor, int gameID){}
-        JoinGameData joinData = new Gson().fromJson(req.body(), JoinGameData.class);
+        JoinGameRequest joinData = new Gson().fromJson(req.body(), JoinGameRequest.class);
         gameService.joinGame(username, joinData.playerColor(), joinData.gameID());
         res.status(200);
         return "";
