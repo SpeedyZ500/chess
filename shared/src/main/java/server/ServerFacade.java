@@ -18,7 +18,6 @@ import java.util.Map;
 public class ServerFacade {
 
     private final String serverUrl;
-    private String authToken;
 
     public ServerFacade(String url) {
         serverUrl = url;
@@ -26,55 +25,66 @@ public class ServerFacade {
 
     public void clear() throws ResponseException{
         var path = "/db";
-        this.makeRequest("DELETE", path, null, null);
+        this.makeRequest("DELETE", path, null, null, null);
     }
 
-    public AuthData register(UserData userData) throws ResponseException {
+    public AuthData register(String username, String password, String email) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, userData, AuthData.class);
+        var req = Map.of("username", username, "password", password, "email", email);
+        return this.makeRequest("POST", path, req, AuthData.class, null);
     }
 
-    public AuthData login(UserData userData) throws ResponseException {
+    public AuthData login(String username, String password) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, userData, AuthData.class);
+        var req = Map.of("username", username, "password", password);
+
+        return this.makeRequest("POST", path, req, AuthData.class, null);
     }
 
-    public void logout() throws ResponseException{
+    public void logout(String authToken) throws ResponseException{
         var path = "/session";
-        this.makeRequest("DELETE", path, null, null);
+        this.makeRequest("DELETE", path, null, null, authToken);
     }
 
     public GameData[] listGames() throws ResponseException {
         var path = "/game";
         record listGameResponse(GameData[] game){
         }
-        var response = this.makeRequest("GET", path, null, listGameResponse.class);
+        var response = this.makeRequest("GET", path, null, listGameResponse.class, null);
         return response.game();
     }
 
-    public int createGame(String gameName) throws ResponseException{
+    public int createGame(String gameName, String authToken) throws ResponseException{
         var path = "/game";
         record gameID (int gameID){};
         var requestBody = Map.of("name", gameName);
-        var response = this.makeRequest("POST", path, requestBody, gameID.class);
+        var response = this.makeRequest("POST", path, requestBody, gameID.class, authToken);
         return response.gameID();
     }
 
 
-    public void joinGame(String playerColor, int gameId) throws ResponseException {
+    public void joinGame(String playerColor, int gameId, String authToken) throws ResponseException {
         var request = Map.of("playerColor", playerColor, "gameID", gameId);
         var path = "/game";
-        this.makeRequest("PUT", path, request, null);
+        this.makeRequest("PUT", path, request, null,  authToken);
     }
 
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(
+            String method,
+            String path,
+            Object request,
+            Class<T> responseClass,
+            String authToken
+    ) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
-
+            if (authToken != null ){
+                http.setRequestProperty("Authorization", "Bearer " + authToken);
+            }
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);

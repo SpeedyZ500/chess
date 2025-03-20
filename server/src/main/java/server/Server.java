@@ -76,13 +76,12 @@ public class Server {
     private void filter(Request req, Response res) throws ResponseException{
         String path = req.pathInfo();
         String method = req.requestMethod().toLowerCase();
-        if(!path.equals("/session") || !method.equals("post") ){
+        if(!path.equals("/session") || !method.equals("post") ) {
             String header = req.headers("authorization");
-            if(!userService.verifyToken(header) || header == null){
+            if (!userService.verifyToken(header) || header == null) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
         }
-
     }
 
     private void exceptionHandler(ResponseException ex, Request req, Response res){
