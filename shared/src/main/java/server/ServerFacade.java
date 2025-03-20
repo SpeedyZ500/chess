@@ -46,11 +46,11 @@ public class ServerFacade {
         this.makeRequest("DELETE", path, null, null, authToken);
     }
 
-    public GameData[] listGames() throws ResponseException {
+    public GameData[] listGames(String authToken) throws ResponseException {
         var path = "/game";
         record listGameResponse(GameData[] game){
         }
-        var response = this.makeRequest("GET", path, null, listGameResponse.class, null);
+        var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
         return response.game();
     }
 

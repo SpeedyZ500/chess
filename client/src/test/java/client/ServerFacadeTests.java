@@ -91,6 +91,21 @@ public class ServerFacadeTests {
         Assertions.assertThrows(ResponseException.class,() -> createGame(authToken));
     }
 
+    @Test
+    public void listGamesPositive() throws ResponseException{
+        String authToken = registrationHelper();
+        Assertions.assertDoesNotThrow(() -> facade.listGames(authToken));
+        createGame(authToken);
+        Assertions.assertDoesNotThrow(() -> facade.listGames(authToken));
+    }
+
+    @Test
+    public void listGamesNegative() throws ResponseException{
+        String authToken = registrationHelper();
+        createGame(authToken);
+        Assertions.assertThrows(ResponseException.class, () -> facade.listGames(authToken + "bad"));
+    }
+
 
 
 
