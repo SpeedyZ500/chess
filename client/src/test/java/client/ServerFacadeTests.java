@@ -106,6 +106,27 @@ public class ServerFacadeTests {
         Assertions.assertThrows(ResponseException.class, () -> facade.listGames(authToken + "bad"));
     }
 
+    @Test
+    public void joinGamePositive() throws ResponseException{
+        String authToken = registrationHelper();
+        int gameID = createGame(authToken);
+        Assertions.assertDoesNotThrow(() -> facade.joinGame("WHITE", gameID, authToken));
+        Assertions.assertDoesNotThrow(() -> facade.joinGame("BLACK", gameID, authToken));
+    }
+
+    @Test
+    public void joinGameNegative() throws ResponseException{
+        String authToken = registrationHelper();
+        Assertions.assertThrows(ResponseException.class,
+                () -> facade.joinGame("WHITE", -1, authToken));
+        int gameID = createGame(authToken);
+        Assertions.assertThrows(ResponseException.class,
+                () -> facade.joinGame("WHITE", gameID, authToken+"bad"));
+
+        facade.joinGame("WHITE", gameID, authToken);
+        Assertions.assertThrows(ResponseException.class, () -> facade.joinGame("WHITE", gameID, authToken));
+    }
+
 
 
 
