@@ -32,7 +32,7 @@ public class GameplayClient implements Client{
 
     @Override
     public String eval(String input){
-        return "transition; How did you get here? This isn't even implemented yet.";
+        return "transition;; How did you get here? This isn't even implemented yet.";
     }
 
     @Override
@@ -64,6 +64,6 @@ public class GameplayClient implements Client{
 
     @Override
     public String terminalState(){
-        return drawBoard() + "\n" + RESET  + String.format("[GamePlay]");
+        return drawBoard() + "\n" + RESET  + "[IN-GAME]";
     }
 }

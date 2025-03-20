@@ -18,7 +18,18 @@ public class Repl {
         while(!result.equalsIgnoreCase("quit")){
             printPrompt();
             String line = scanner.nextLine();
-            result = client.
+            result = client.eval(line);
+            String[] splitResult = result.split(";;");
+            if(splitResult[0].trim().equalsIgnoreCase("transition")){
+                if(splitResult.length >= 3){
+                    client = client.transition(splitResult[1].trim());
+                }
+                else{
+                    client = client.transition();
+                }
+            }
+            System.out.print(splitResult[splitResult.length -1]);
+
         }
     }
 
