@@ -41,4 +41,10 @@ public class ServerFacadeTests {
         Assertions.assertDoesNotThrow(this::registrationHelper);
     }
 
+    @Test
+    public void registerNegative() throws ResponseException{
+        registrationHelper();
+        Assertions.assertThrows(ResponseException.class, this::registrationHelper);
+    }
+
 }
