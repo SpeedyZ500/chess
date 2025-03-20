@@ -47,4 +47,16 @@ public class ServerFacadeTests {
         Assertions.assertThrows(ResponseException.class, this::registrationHelper);
     }
 
+    @Test
+    public void logoutPositive() throws ResponseException {
+        String authToken = registrationHelper();
+        Assertions.assertDoesNotThrow(() -> facade.logout(authToken));
+    }
+
+    @Test
+    public void logoutNegative() throws ResponseException {
+        String authToken = registrationHelper();
+        Assertions.assertThrows(ResponseException.class, () -> facade.logout(authToken + "badData"));
+    }
+
 }
