@@ -19,6 +19,7 @@ public class GameplayClient implements Client{
     private ChessGame game;
     private final ChessGame.TeamColor team;
     private final int gameID;
+    private final BoardPrinter boardPrinter;
 
     GameplayClient(String serverUrl, ServerFacade server, String username, String authToken, GameData gameData){
         this.serverUrl = serverUrl;
@@ -28,10 +29,14 @@ public class GameplayClient implements Client{
         this.game = gameData.game();
         this.gameID = gameData.gameID();
         this.team = gameData.blackUsername().equals(username) ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+        this.boardPrinter = new BoardPrinter(gameData.game());
     }
 
     @Override
     public String eval(String input){
+        if(game == null || gameID < 0){
+            return "transition;; How did you get here? You don't even have a game saved.";
+        }
         return "transition;; How did you get here? This isn't even implemented yet.";
     }
 
@@ -50,20 +55,11 @@ public class GameplayClient implements Client{
         return new PostloginClient(serverUrl, server, username, authToken);
     }
 
-    public String drawBoard(){
-        return drawBoard(game.getBoard(), team);
-    }
-    public static String drawBoard(ChessBoard board){
-        return drawBoard(board, ChessGame.TeamColor.WHITE);
-    }
 
-    public static String drawBoard(ChessBoard board, ChessGame.TeamColor color){
-        return "";
-    }
 
 
     @Override
     public String terminalState(){
-        return drawBoard() + "\n" + RESET  + "[IN-GAME]";
+        return boardPrinter.print(team) + "\n" + RESET  + "[IN-GAME]";
     }
 }
