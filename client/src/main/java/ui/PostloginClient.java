@@ -5,9 +5,7 @@ import exception.ResponseException;
 import model.GameData;
 import server.ServerFacade;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static ui.EscapeSequences.*;
 
@@ -67,26 +65,35 @@ public class PostloginClient implements Client{
 
     public String list() throws ResponseException{
         games.clear();
-        games.addAll(Arrays.asList(server.listGames(authToken)));
+        GameData[] gamesArray = server.listGames(authToken);
+        games.addAll(Arrays.stream(gamesArray).toList());
         return "Games:\n" + printListOfGames();
     }
 
     private String printListOfGames(){
         StringBuilder output = new StringBuilder();
-        output.append(String.format("%s| %-6s | %-11s | %-15s | %-15s |%n%s",
-                SET_TEXT_UNDERLINE, "ID", "Game Name", "White User", "Black User", RESET_TEXT_UNDERLINE));
+        output.append("+--------+-------------+-----------------+-----------------+\n");
+        output.append(String.format("| %-6s | %-11s | %-15s | %-15s |%n",
+                 "ID", "Game Name", "White User", "Black User" ));
         for(int i = 0; i < games.size(); i++){
             GameData game = games.get(i);
-            output.append(String.format("| %s%-6d | %s%s-11s | %s%-15s | %s%-15s |%n",
+            String gameName = game.gameName() == null ? "NULL" : game.gameName();
+            String whiteUsername = game.whiteUsername() == null ? "NULL" : game.whiteUsername();
+            String blackUsername = game.blackUsername() == null ? "NULL" : game.blackUsername();
+
+            output.append(String.format("| %s%-6d %s| %-11s | %s%-15s %s| %s%-15s %s|%n",
                     SET_TEXT_COLOR_YELLOW,
                     i,
                     SET_TEXT_COLOR_GREEN,
-                    game.gameName(),
-                    SET_TEXT_COLOR_LIGHT_GREY,
-                    game.whiteUsername(),
+                    gameName,
+                    SET_TEXT_COLOR_WHITE,
+                    whiteUsername,
+                    SET_TEXT_COLOR_GREEN,
                     SET_TEXT_COLOR_BLUE,
-                    game.blackUsername())
+                    blackUsername,
+                    SET_TEXT_COLOR_GREEN)
             );
+            output.append("+--------+-------------+-----------------+-----------------+\n");
 
         }
         output.append(SET_TEXT_COLOR_GREEN);
@@ -97,7 +104,8 @@ public class PostloginClient implements Client{
         if (params.length >= 2) {
             int gameID = Integer.parseInt(params[0]);
             GameData game = checkGame(gameID);
-            if(!params[1].equals("WHITE") && !params[1].equals("BLACK")){
+            Set<String> validColors = Set.of("WHITE", "BLACK");
+            if(!validColors.contains(params[1].trim().toUpperCase())){
                 throw new ResponseException(400, "Expected: [WHITE|BLACK]");
             }
 
@@ -111,7 +119,7 @@ public class PostloginClient implements Client{
                     game.gameName(),
                     SET_TEXT_ITALIC,
                     RESET_TEXT_ITALIC,
-                    BoardPrinter.print(ChessGame.TeamColor.valueOf(params[1]), game.game().getBoard())
+                    BoardPrinter.print(ChessGame.TeamColor.valueOf(params[1].trim().toUpperCase()), game.game().getBoard())
             );
         }
         else {
@@ -162,13 +170,13 @@ public class PostloginClient implements Client{
                     %s quit %s - playing chess
                     %s help %s - with commands
                 """,
-                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY,
-                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY,
-                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY,
-                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY
-                ,SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY,
-                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY,
-                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY
+                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW,
+                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW,
+                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW,
+                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW
+                ,SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW,
+                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW,
+                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW
                 );
     }
 

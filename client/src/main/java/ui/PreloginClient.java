@@ -70,10 +70,10 @@ public class PreloginClient implements Client {
                     %s quit %s- playing chess
                     %s help %s- with possible commands
                 """,
-                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY,
-                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY,
-                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY
-                ,SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_LIGHT_GREY
+                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW,
+                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW,
+                SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW
+                ,SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW
         );
     }
 

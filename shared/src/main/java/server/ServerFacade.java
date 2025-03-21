@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import gson.GsonConfig;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -18,6 +19,7 @@ import java.util.Map;
 public class ServerFacade {
 
     private final String serverUrl;
+    private static final Gson gson = GsonConfig.createGson();;
 
     public ServerFacade(String url) {
         serverUrl = url;
@@ -48,16 +50,16 @@ public class ServerFacade {
 
     public GameData[] listGames(String authToken) throws ResponseException {
         var path = "/game";
-        record listGameResponse(GameData[] game){
+        record listGameResponse(GameData[] games){
         }
         var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
-        return response.game();
+        return response.games();
     }
 
     public int createGame(String gameName, String authToken) throws ResponseException{
         var path = "/game";
         record gameID (int gameID){};
-        var requestBody = Map.of("name", gameName);
+        var requestBody = Map.of("gameName", gameName);
         var response = this.makeRequest("POST", path, requestBody, gameID.class, authToken);
         return response.gameID();
     }
@@ -124,7 +126,7 @@ public class ServerFacade {
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
                 if (responseClass != null) {
-                    response = new Gson().fromJson(reader, responseClass);
+                    response = gson.fromJson(reader, responseClass);
                 }
             }
         }

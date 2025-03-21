@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import gson.GsonConfig;
 import model.GameData;
 import service.GameService;
 import exception.ResponseException;
@@ -13,6 +14,8 @@ import java.util.Collection;
 public class GameHandler {
     UserService userService;
     GameService gameService;
+    private static final Gson gson = GsonConfig.createGson();;
+
     public GameHandler(UserService userService, GameService gameService){
         this.userService = userService;
         this.gameService = gameService;
@@ -22,17 +25,17 @@ public class GameHandler {
         record GamesList(Collection<GameData> games){}
         GamesList gameList = new GamesList(gameService.listGames());
         res.status(200);
-        res.body(new Gson().toJson(gameList));
+        res.body(gson.toJson(gameList));
         return res.body();
     }
 
     public Object createGame(Request req, Response res) throws ResponseException {
-        record gameName(String name) {};
+        record gameName(String gameName) {};
         var gameName = new Gson().fromJson(req.body(), gameName.class);
-        if(gameName.name() == null){
+        if(gameName.gameName() == null){
             throw new ResponseException(400, "Error: bad request");
         }
-        int gameID = gameService.createGame(gameName.name());
+        int gameID = gameService.createGame(gameName.gameName());
         res.status(200);
         res.body("{\"gameID\": %d}".formatted(gameID));
         return res.body();

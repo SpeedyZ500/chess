@@ -38,14 +38,14 @@ public class BoardPrinter {
             output.append("\n");
             for(int file = startingPosition; file <= 9 && file >= 0; file += direction){
                 if(rank == 9 || rank == 0 || file == 9 || file == 0){
-                    output.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLACK);
-                    output.append(rank == 9 || rank == 0 ? RANKS[rank] : file);
+                    output.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_YELLOW);
+                    output.append(rank == 9 || rank == 0 ? RANKS[file] : " " + rank + " ");
                 }
                 else{
                     ChessMove lastMove = board.getLastMove();
                     ChessPosition lastMoveStart = lastMove != null ? lastMove.getStartPosition() : null;
                     ChessPosition lastMoveEnd = lastMove != null ? lastMove.getStartPosition() : null;
-                    ChessPosition positionCheck = new ChessPosition(rank, file);
+                    ChessPosition positionCheck = new ChessPosition(9 - rank, 9 - file);
                     if(positionCheck.equals(lastMoveStart) || positionCheck.equals(lastMoveEnd)){
                         output.append(SET_BG_COLOR_MAGENTA);
                     }
@@ -59,6 +59,7 @@ public class BoardPrinter {
                     output.append(displayPiece(piece));
                 }
             }
+            output.append(RESET_BG_COLOR);
         }
         output.append(RESET);
         return output.toString();
@@ -70,22 +71,22 @@ public class BoardPrinter {
         }
         return switch(piece.getPieceType()){
             case KING -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_RED + WHITE_KING :
+                    SET_TEXT_COLOR_WHITE + WHITE_KING :
                     SET_TEXT_COLOR_BLUE + BLACK_KING;
             case PAWN -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_RED + WHITE_PAWN :
+                    SET_TEXT_COLOR_WHITE + WHITE_PAWN :
                     SET_TEXT_COLOR_BLUE + BLACK_PAWN;
             case ROOK -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_RED + WHITE_ROOK :
+                    SET_TEXT_COLOR_WHITE + WHITE_ROOK :
                     SET_TEXT_COLOR_BLUE + BLACK_ROOK;
             case BISHOP -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_RED + WHITE_BISHOP :
+                    SET_TEXT_COLOR_WHITE + WHITE_BISHOP :
                     SET_TEXT_COLOR_BLUE + BLACK_BISHOP;
             case KNIGHT -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_RED + WHITE_KNIGHT :
+                    SET_TEXT_COLOR_WHITE + WHITE_KNIGHT :
                     SET_TEXT_COLOR_BLUE + BLACK_KNIGHT;
             case QUEEN -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_RED + WHITE_QUEEN :
+                    SET_TEXT_COLOR_WHITE + WHITE_QUEEN :
                     SET_TEXT_COLOR_BLUE + BLACK_QUEEN;
             default -> EMPTY;
         };

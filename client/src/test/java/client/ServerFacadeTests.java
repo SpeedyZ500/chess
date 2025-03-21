@@ -97,6 +97,7 @@ public class ServerFacadeTests {
         Assertions.assertDoesNotThrow(() -> facade.listGames(authToken));
         createGame(authToken);
         Assertions.assertDoesNotThrow(() -> facade.listGames(authToken));
+        Assertions.assertEquals(1, facade.listGames(authToken).length);
     }
 
     @Test
