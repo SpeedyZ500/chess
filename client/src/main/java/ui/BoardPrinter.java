@@ -35,6 +35,7 @@ public class BoardPrinter {
         StringBuilder output = new StringBuilder();
         output.append(RESET + SET_TEXT_BOLD);
         for(int rank = startingPosition; rank <= 9 && rank >= 0; rank += direction){
+            output.append("\n");
             for(int file = startingPosition; file <= 9 && file >= 0; file += direction){
                 if(rank == 9 || rank == 0 || file == 9 || file == 0){
                     output.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLACK);
