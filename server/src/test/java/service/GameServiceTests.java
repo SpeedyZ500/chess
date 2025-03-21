@@ -37,7 +37,7 @@ public class GameServiceTests {
     }
 
     @Test
-    void createGame() throws ResponseException{
+    void createGame(){
         var gameName = "new game";
         assertDoesNotThrow(() -> GAME_SERVICE.createGame(gameName));
     }
@@ -91,7 +91,7 @@ public class GameServiceTests {
         assertThrows(ResponseException.class, () -> GAME_SERVICE.joinGame("", "WHITE", gameID));
     }
     @Test
-    void noGame() throws ResponseException{
+    void noGame(){
         assertThrows(ResponseException.class, () -> GAME_SERVICE.joinGame("shadow_the_hedgehog", "WHITE", 1));
     }
 

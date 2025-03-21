@@ -1,13 +1,8 @@
 package ui;
 
-import chess.ChessBoard;
 import chess.ChessGame;
-import exception.ResponseException;
-import model.AuthData;
 import model.GameData;
-import server.ServerFacade;
-
-import java.util.Arrays;
+import client.ServerFacade;
 
 import static ui.EscapeSequences.RESET;
 

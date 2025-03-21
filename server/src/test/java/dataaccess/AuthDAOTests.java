@@ -56,7 +56,7 @@ public class AuthDAOTests {
     void missingAuth(Class<? extends AuthDAO> dbClass) throws DataAccessException{
         AuthDAO authDAO = getAuthDAO(dbClass);
         var actual = authDAO.getAuth("why");
-        assertEquals(null, actual);
+        assertNull(actual);
     }
 
     @ParameterizedTest

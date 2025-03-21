@@ -83,8 +83,7 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition start = move.getStartPosition();
         ChessPiece piece = board.getPiece(start);
-        List<ChessMove> valid = new ArrayList<>();
-        valid.addAll(validMoves(start));
+        List<ChessMove> valid = new ArrayList<>(validMoves(start));
         if(!valid.contains(move) || piece == null || piece.getTeamColor() != getTeamTurn()){
             throw new InvalidMoveException();
         }

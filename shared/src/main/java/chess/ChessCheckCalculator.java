@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ChessCheckCalculator {
-    private ChessBoard board;
+    private final ChessBoard board;
     ChessCheckCalculator(ChessBoard board){
         this.board = board;
     }
@@ -49,7 +49,7 @@ public class ChessCheckCalculator {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(ChessGame.TeamColor teamColor) {
-        return isInCheck(teamColor) && !canMove(teamColor);
+        return isInCheck(teamColor) && cantMove(teamColor);
     }
 
     /**
@@ -60,10 +60,10 @@ public class ChessCheckCalculator {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(ChessGame.TeamColor teamColor) {
-        return !canMove(teamColor) && !isInCheck(teamColor);
+        return cantMove(teamColor) && !isInCheck(teamColor);
     }
 
-    private boolean canMove(ChessGame.TeamColor teamColor){
+    private boolean cantMove(ChessGame.TeamColor teamColor){
         Iterator<Placement> iter = board.iterator();
         List<ChessMove> valid = new ArrayList<>();
         while(iter.hasNext()){
@@ -72,7 +72,7 @@ public class ChessCheckCalculator {
                 valid.addAll(new ChessMovesValidator(board).validMoves(place.getPosition()));
             }
         }
-        return !valid.isEmpty();
+        return valid.isEmpty();
     }
 
 

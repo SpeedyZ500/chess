@@ -2,7 +2,7 @@ package ui;
 
 import exception.ResponseException;
 import model.AuthData;
-import server.ServerFacade;
+import client.ServerFacade;
 
 import java.util.Arrays;
 

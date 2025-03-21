@@ -25,7 +25,7 @@ public class PawnMovesCalculator implements ChessMovesCalculator {
                 break;
             default:
                 break;
-        };
+        }
         moves.addAll(pawnForward(board, position, direction, start));
         moves.addAll(pawnCapture(board, position, direction, piece));
         moves.addAll(enPassant(board, position, direction, enPassantRow, piece));
@@ -84,11 +84,11 @@ public class PawnMovesCalculator implements ChessMovesCalculator {
     /**
      * Checks to see if you can en Passant, and if so add that to possible moves list
      *
-     * @param board
-     * @param position
-     * @param direction
-     * @param enPassantRow
-     * @param piece
+     * @param board - the chess board
+     * @param position - the current position
+     * @param direction - the direction of travel
+     * @param enPassantRow - the row required for enPassant
+     * @param piece - the chess piece
      * @return a list of possible en Passant moves
      */
     private Collection<ChessMove> enPassant(ChessBoard board, ChessPosition position, int direction, int enPassantRow, ChessPiece piece){

@@ -1,5 +1,4 @@
 import chess.*;
-import server.ServerFacade;
 import ui.Repl;
 
 public class Main {

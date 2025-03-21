@@ -56,7 +56,7 @@ public class UserDAOTests {
     @ValueSource(classes = {MemoryUserDAO.class, SQLUserDAO.class})
     void noUser(Class<? extends UserDAO> dbClass) throws DataAccessException{
         UserDAO userDAO = getUserDAO(dbClass);
-        assertEquals(null,   userDAO.getUser("bill_nye_science"));
+        assertNull( userDAO.getUser("bill_nye_science"));
     }
 
     @ParameterizedTest
@@ -70,9 +70,7 @@ public class UserDAOTests {
 
         var actual = userDAO.listUsers();
         Map<String, UserData> actualMap = new HashMap<>();
-        actual.forEach((user) -> {
-            actualMap.put(user.username(), user);
-        });
+        actual.forEach((user) -> actualMap.put(user.username(), user));
         assertUserCollectionEqual(expected.values(), actualMap.values());
     }
 

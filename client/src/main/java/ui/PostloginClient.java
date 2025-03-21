@@ -3,7 +3,7 @@ package ui;
 import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
-import server.ServerFacade;
+import client.ServerFacade;
 
 import java.util.*;
 

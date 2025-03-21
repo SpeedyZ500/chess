@@ -3,8 +3,8 @@ package chess;
 import java.util.Objects;
 
 public class Placement {
-    private ChessPosition position;
-    private ChessPiece piece;
+    private final ChessPosition position;
+    private final ChessPiece piece;
 
 
     @Override

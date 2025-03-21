@@ -34,8 +34,7 @@ public class UserService {
     }
     public AuthData register(UserData userData) throws ResponseException {
         try {
-            UserData exists = null;
-            exists = userDAO.getUser(userData.username());
+            UserData exists = userDAO.getUser(userData.username());
             if (exists != null) {
                 throw new ResponseException(403, "Error: already taken");
             }

@@ -29,7 +29,7 @@ public class UserServiceTests {
     @Test
     void register()throws ResponseException{
         var userData = new UserData("sonic_the_hedgehog", "got2goFast!", "sonichedgehog@sega.org");
-        AuthData authData = USER_SERVICE.register(userData);
+        USER_SERVICE.register(userData);
         var users = USER_SERVICE.listUsers();
         var auths = USER_SERVICE.listAuths();
 
@@ -53,7 +53,7 @@ public class UserServiceTests {
         assertTrue(auths.contains(authData));
     }
     @Test
-    void userMustExist()throws ResponseException{
+    void userMustExist(){
         var userData = new UserData("sonic_the_hedgehog", "got2goFast!", "sonichedgehog@sega.org");
         assertThrows(ResponseException.class, () -> USER_SERVICE.login(userData));
     }

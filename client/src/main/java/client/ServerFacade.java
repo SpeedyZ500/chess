@@ -1,11 +1,10 @@
-package server;
+package client;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
 import gson.GsonConfig;
 import model.AuthData;
 import model.GameData;
-import model.UserData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +18,7 @@ import java.util.Map;
 public class ServerFacade {
 
     private final String serverUrl;
-    private static final Gson gson = GsonConfig.createGson();;
+    private static final Gson GSON = GsonConfig.createGson();
 
     public ServerFacade(String url) {
         serverUrl = url;
@@ -50,17 +49,17 @@ public class ServerFacade {
 
     public GameData[] listGames(String authToken) throws ResponseException {
         var path = "/game";
-        record listGameResponse(GameData[] games){
+        record ListGameResponse(GameData[] games){
         }
-        var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
+        var response = this.makeRequest("GET", path, null, ListGameResponse.class, authToken);
         return response.games();
     }
 
     public int createGame(String gameName, String authToken) throws ResponseException{
         var path = "/game";
-        record gameID (int gameID){};
+        record GameID (int gameID){}
         var requestBody = Map.of("gameName", gameName);
-        var response = this.makeRequest("POST", path, requestBody, gameID.class, authToken);
+        var response = this.makeRequest("POST", path, requestBody, GameID.class, authToken);
         return response.gameID();
     }
 
@@ -126,7 +125,7 @@ public class ServerFacade {
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
                 if (responseClass != null) {
-                    response = gson.fromJson(reader, responseClass);
+                    response = GSON.fromJson(reader, responseClass);
                 }
             }
         }

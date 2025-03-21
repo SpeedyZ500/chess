@@ -3,7 +3,7 @@ package chess;
 import java.util.*;
 
 public class ChessMovesValidator {
-    private ChessBoard board;
+    private final ChessBoard board;
     ChessMovesValidator(ChessBoard board){
         this.board = board;
     }

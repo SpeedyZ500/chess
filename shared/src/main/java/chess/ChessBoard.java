@@ -147,9 +147,9 @@ public class ChessBoard {
      * that is castling, move the rook that is from the same direction as the king moved
      * to the other side of the king
      * If the promotion isn't null, promote the piece
-     * @param startPosition
-     * @param endPosition
-     * @param promotion
+     * @param startPosition - the starting position
+     * @param endPosition - the end position
+     * @param promotion - if there is a promotion, what is it
      */
     public void movePiece(ChessPosition startPosition, ChessPosition endPosition, ChessPiece.PieceType promotion){
         ChessBoard prev = new ChessBoard();

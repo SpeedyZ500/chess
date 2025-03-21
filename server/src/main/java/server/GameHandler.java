@@ -14,7 +14,7 @@ import java.util.Collection;
 public class GameHandler {
     UserService userService;
     GameService gameService;
-    private static final Gson gson = GsonConfig.createGson();;
+    private static final Gson GSON = GsonConfig.createGson();;
 
     public GameHandler(UserService userService, GameService gameService){
         this.userService = userService;
@@ -25,13 +25,13 @@ public class GameHandler {
         record GamesList(Collection<GameData> games){}
         GamesList gameList = new GamesList(gameService.listGames());
         res.status(200);
-        res.body(gson.toJson(gameList));
+        res.body(GSON.toJson(gameList));
         return res.body();
     }
 
     public Object createGame(Request req, Response res) throws ResponseException {
-        record gameName(String gameName) {};
-        var gameName = new Gson().fromJson(req.body(), gameName.class);
+        record GameName(String gameName) {};
+        var gameName = new Gson().fromJson(req.body(), GameName.class);
         if(gameName.gameName() == null){
             throw new ResponseException(400, "Error: bad request");
         }
