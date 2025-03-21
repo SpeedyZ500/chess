@@ -5,7 +5,6 @@ import chess.ChessMove;
 import chess.ChessPosition;
 import dataaccess.gamedao.GameDAO;
 import dataaccess.gamedao.MemoryGameDAO;
-import exception.DataAccessException;
 import model.GameData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

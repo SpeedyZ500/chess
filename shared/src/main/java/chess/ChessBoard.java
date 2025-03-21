@@ -1,7 +1,5 @@
 package chess;
 
-import exception.InvalidPositionException;
-
 import java.util.*;
 
 /**

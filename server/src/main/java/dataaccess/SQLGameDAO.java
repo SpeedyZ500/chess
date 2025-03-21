@@ -4,7 +4,6 @@ package dataaccess;
 
 import com.google.gson.Gson;
 import dataaccess.gamedao.GameDAO;
-import exception.DataAccessException;
 import gson.GsonConfig;
 import model.GameData;
 

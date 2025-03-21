@@ -2,7 +2,6 @@ package dataaccess;
 
 import dataaccess.userdao.UserDAO;
 import dataaccess.userdao.MemoryUserDAO;
-import exception.DataAccessException;
 import model.UserData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

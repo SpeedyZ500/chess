@@ -1,6 +1,6 @@
 package service;
 
-import exception.DataAccessException;
+import dataaccess.DataAccessException;
 import dataaccess.authdao.AuthDAO;
 import dataaccess.userdao.UserDAO;
 import exception.ResponseException;

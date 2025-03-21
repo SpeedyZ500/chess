@@ -3,7 +3,6 @@ package dataaccess;
 // but it wouldn't let me because the methods for DatabaseManager are default
 
 import dataaccess.userdao.UserDAO;
-import exception.DataAccessException;
 import model.UserData;
 
 import java.sql.ResultSet;

@@ -1,6 +1,6 @@
 package server;
 
-import exception.DataAccessException;
+import dataaccess.DataAccessException;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;

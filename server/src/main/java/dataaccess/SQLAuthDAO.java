@@ -2,7 +2,6 @@ package dataaccess;
 //really wanted to put this in the authdao subpackage,
 // but it wouldn't let me because the methods for DatabaseManager are default
 import dataaccess.authdao.AuthDAO;
-import exception.DataAccessException;
 import model.AuthData;
 
 import java.sql.ResultSet;
