@@ -78,12 +78,12 @@ public class PostloginClient implements Client{
         for(int i = 0; i < games.size(); i++){
             GameData game = games.get(i);
             String gameName = game.gameName() == null ? "NULL" : game.gameName();
-            String whiteUsername = game.whiteUsername() == null ? "NULL" : game.whiteUsername();
+            String whiteUsername = game.whiteUsername() == null ? "none" : game.whiteUsername();
             String blackUsername = game.blackUsername() == null ? "NULL" : game.blackUsername();
 
             output.append(String.format("| %s%-6d %s| %-11s | %s%-15s %s| %s%-15s %s|%n",
                     SET_TEXT_COLOR_YELLOW,
-                    i,
+                    i+1,
                     SET_TEXT_COLOR_GREEN,
                     gameName,
                     SET_TEXT_COLOR_WHITE,
@@ -102,50 +102,72 @@ public class PostloginClient implements Client{
 
     public String join(String ...params) throws ResponseException{
         if (params.length >= 2) {
-            int gameID = Integer.parseInt(params[0]);
-            GameData game = checkGame(gameID);
+            GameData game = checkGame(params[0]);
             Set<String> validColors = Set.of("WHITE", "BLACK");
             if(!validColors.contains(params[1].trim().toUpperCase())){
                 throw new ResponseException(400, "Expected: [WHITE|BLACK]");
             }
+            if("WHITE".equalsIgnoreCase(params[1].trim()) && !username.equals(game.whiteUsername()) ||
+                    "BLACK".equalsIgnoreCase(params[1].trim()) && !username.equals(game.blackUsername())){
+                server.joinGame(params[1], game.gameID(), authToken);
+                return String.format(
+                        """
+                            Successfully joined: %s. %s However, %s the Gameplay aspect has yet to be implemented.
+                            Instead enjoy this lovely recreation of the board, from the perspective you would have in game.
+                            %s
+                        """,
+                        game.gameName(),
+                        SET_TEXT_ITALIC,
+                        RESET_TEXT_ITALIC,
+                        BoardPrinter.print(
+                                ChessGame.TeamColor.valueOf(params[1].trim().toUpperCase()),
+                                game.game().getBoard()
+                        )
+                );
+            }
+            else{
+                return BoardPrinter.print(
+                        ChessGame.TeamColor.valueOf(params[1].trim().toUpperCase()),
+                        game.game().getBoard()
+                );
 
-            server.joinGame(params[1], game.gameID(), authToken);
-            return String.format(
-                    """
-                        Successfully joined: %s. %s However, %s the Gameplay aspect has yet to be implemented.
-                        Instead enjoy this lovely recreation of the board, from the perspective you would have in game.
-                        %s
-                    """,
-                    game.gameName(),
-                    SET_TEXT_ITALIC,
-                    RESET_TEXT_ITALIC,
-                    BoardPrinter.print(ChessGame.TeamColor.valueOf(params[1].trim().toUpperCase()), game.game().getBoard())
-            );
+            }
+
         }
         else {
             throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
         }
     }
 
-    private GameData checkGame(int gameID) throws ResponseException{
-        if(games.isEmpty()){
-            throw new ResponseException(400, String.format("""
+    private GameData checkGame(String stringGameID) throws ResponseException{
+        try {
+            int gameID = Integer.parseInt(stringGameID) - 1;
+            if(games.isEmpty()){
+                throw new ResponseException(400, String.format("""
                         I know you don't know what game that is, no joining/observing random games.
                         Please run %s list %s first.
                         """, SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_RED));
+            }
+            if(gameID >= games.size()){
+                throw new ResponseException(400, "Game may not exist, please use " + SET_TEXT_COLOR_BLUE + "list "
+                        + SET_TEXT_COLOR_RED + "and verify that that is in-fact the game you desire");
+            }
+            if(gameID < 0){
+                throw new ResponseException(400, "<ID> must be Greater than 1");
+            }
+            return games.get(gameID);
         }
-        if(gameID >= games.size()){
-            throw new ResponseException(400, "Game may not exist, please use " + SET_TEXT_COLOR_BLUE + "list "
-                    + SET_TEXT_COLOR_RED + "and verify that that is in-fact the game you desire");
+        catch (NumberFormatException e){
+            throw new ResponseException(400, "<ID> must be a number");
         }
-        return games.get(gameID);
     }
 
 
     public String observe(String ...params) throws ResponseException{
         if(params.length >= 1){
-            int gameID = Integer.parseInt(params[0]);
-            GameData game = checkGame(gameID);
+
+
+            GameData game = checkGame(params[0]);
             return String.format("Observing: %s%n%s", game.gameName(), BoardPrinter.print(game.game().getBoard()));
         }
         else{

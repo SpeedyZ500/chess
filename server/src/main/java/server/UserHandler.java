@@ -31,7 +31,7 @@ public class UserHandler {
     public Object login(Request req, Response res) throws ResponseException {
         UserData userData = new Gson().fromJson(req.body(), UserData.class);
         if (userData.username() == null || userData.password() == null) {
-            throw new ResponseException(401, "Error: unauthorized");
+            throw new ResponseException(401, "Error: <USERNAME> or <PASSWORD> is incorrect");
         } else {
             AuthData auth = userService.login(userData);
             res.status(200);

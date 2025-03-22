@@ -6,7 +6,7 @@ import static ui.EscapeSequences.*;
 
 public class BoardPrinter {
 
-    private static final String[] RANKS = {EMPTY, " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h ", EMPTY};
+    private static final String[] RANKS = {EMPTY, " h ", " g ", " f ", " e ", " d ", " c ", " b ", " a ", EMPTY};
     private ChessGame game;
 
     public BoardPrinter(ChessGame game){
@@ -30,8 +30,9 @@ public class BoardPrinter {
     }
 
     public static String print(ChessGame.TeamColor team, ChessBoard board){
-        int direction = team == ChessGame.TeamColor.WHITE ? 1 : -1;
-        int startingPosition = team == ChessGame.TeamColor.WHITE ? 0 : 9;
+        int direction = team == ChessGame.TeamColor.WHITE ? -1 : 1;
+        int startingPosition = team == ChessGame.TeamColor.WHITE ? 9 : 0;
+
         StringBuilder output = new StringBuilder();
         output.append(RESET + SET_TEXT_BOLD);
         for(int rank = startingPosition; rank <= 9 && rank >= 0; rank += direction){
@@ -45,7 +46,7 @@ public class BoardPrinter {
                     ChessMove lastMove = board.getLastMove();
                     ChessPosition lastMoveStart = lastMove != null ? lastMove.getStartPosition() : null;
                     ChessPosition lastMoveEnd = lastMove != null ? lastMove.getStartPosition() : null;
-                    ChessPosition positionCheck = new ChessPosition(9 - rank, 9 - file);
+                    ChessPosition positionCheck = new ChessPosition(rank,  9 - file);
                     if(positionCheck.equals(lastMoveStart) || positionCheck.equals(lastMoveEnd)){
                         output.append(SET_BG_COLOR_MAGENTA);
                     }

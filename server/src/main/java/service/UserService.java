@@ -50,7 +50,7 @@ public class UserService {
         try{
             UserData existing = userDAO.getUser(user.username());
             if(existing == null || !BCrypt.checkpw(user.password(), existing.password())){
-                throw new ResponseException(401, "Error: unauthorized");
+                throw new ResponseException(401, "Error: <USERNAME> or <PASSWORD> is incorrect");
             }
             return authDAO.createAuth(new AuthData("", user.username()));
         }
