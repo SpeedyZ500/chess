@@ -39,6 +39,11 @@ public class ChessPosition {
                 '}';
     }
 
+    public String prettyOutput(){
+        char[] colRep = {'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'};
+        return String.format("%c%d",colRep[col - 1], row);
+    }
+
     /**
      * @return which row this position is in
      * 1 codes for the bottom row

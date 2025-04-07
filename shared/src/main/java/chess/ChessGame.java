@@ -83,7 +83,8 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(start);
         List<ChessMove> valid = new ArrayList<>(validMoves(start));
         if(!valid.contains(move) || piece == null){
-            throw new InvalidMoveException(String.format("Error: %s is not a valid move", move));
+            throw new InvalidMoveException(String.format("Error: From %s to %s is not a valid move",
+                    move.getStartPosition().prettyOutput(), move.getEndPosition().prettyOutput()));
         }
         else if(piece.getTeamColor() != getTeamTurn()){
             throw new InvalidMoveException(String.format("Error: it is %s team's turn", getTeamTurn()));

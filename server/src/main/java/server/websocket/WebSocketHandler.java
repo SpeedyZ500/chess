@@ -1,8 +1,11 @@
 package server.websocket;
 
+import chess.ChessGame;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.GameData;
+import model.UserData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import service.GameService;
@@ -46,8 +49,9 @@ public class WebSocketHandler {
         }
     }
 
-    private void handleConnect(Session session, String message){
+    private void handleConnect(Session session, String message) {
         ConnectCommand command = new Gson().fromJson(message, ConnectCommand.class);
+
 
     }
 
@@ -56,9 +60,28 @@ public class WebSocketHandler {
 
     }
 
-    private void handleMakeMove(Session session, String message) throws InvalidMoveException{
+    private void handleMakeMove(Session session, String message) throws InvalidMoveException, ResponseException{
         MakeMoveCommand command = new Gson().fromJson(message, MakeMoveCommand.class);
-
+        String authToken = command.getAuthToken();
+        GameData gameData = gameService.getGame(command.getGameID());
+        String username = userService.getUsername(authToken);
+        ChessGame.TeamColor currentTurn = gameData.game().getTeamTurn();
+        if( (currentTurn == ChessGame.TeamColor.WHITE && gameData.whiteUsername() == username)
+            || (currentTurn == ChessGame.TeamColor.BLACK && gameData.blackUsername() == username)
+        ){
+            ChessGame game = gameData.game();
+            game.makeMove(command.getMove());
+            gameData = new GameData(
+                    gameData.gameID(),
+                    gameData.whiteUsername(),
+                    gameData.blackUsername(),
+                    gameData.gameName(),
+                    game
+            );
+        }
+        else{
+            throw new InvalidMoveException("Error: it is not your turn or you are not a player");
+        }
 
     }
     private void handleResign(Session session, String message){
