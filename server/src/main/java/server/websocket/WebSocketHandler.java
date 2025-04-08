@@ -18,6 +18,7 @@ import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebSocket
 public class WebSocketHandler {
@@ -76,8 +77,23 @@ public class WebSocketHandler {
         connectionManager.broadcast(gameID,username, notification);
     }
 
-    private void handleLeve(Session session, String message){
+    private void handleLeve(Session session, String message) throws ResponseException, IOException {
         LeaveCommand command = GSON.fromJson(message, LeaveCommand.class);
+        int gameID = command.getGameID();
+        String username = userService.getUsername(command.getAuthToken());
+        GameData gameData = gameService.getGame(gameID);
+        gameData = new GameData(
+                gameID,
+                username.equals(gameData.whiteUsername()) ? null : gameData.whiteUsername(),
+                username.equals(gameData.blackUsername()) ? null : gameData.blackUsername(),
+                gameData.gameName(),
+                gameData.game()
+                );
+        gameService.updateGame(gameData);
+
+        connectionManager.remove(gameID, session, username);
+        NotificationMessage notification = new NotificationMessage(String.format("%s has left the game", username));
+        connectionManager.broadcast(gameID,username, notification);
 
     }
 
@@ -88,8 +104,10 @@ public class WebSocketHandler {
         String username = userService.getUsername(authToken);
         ChessGame game = gameData.game();
         ChessGame.TeamColor currentTurn = game.getTeamTurn();
-
-        if( (currentTurn == ChessGame.TeamColor.WHITE && username.equals(gameData.whiteUsername()) )
+        if(currentTurn == null){
+            sendError(session, "Error: cannot make move, the game is over");
+        }
+        else if( (currentTurn == ChessGame.TeamColor.WHITE && username.equals(gameData.whiteUsername()) )
             || (currentTurn == ChessGame.TeamColor.BLACK && username.equals(gameData.blackUsername()))
         ){
             ChessMove move = command.getMove();

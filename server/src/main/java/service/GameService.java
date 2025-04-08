@@ -45,6 +45,8 @@ public class GameService {
         }
     }
 
+
+
     public GameData joinGame(String username, String playerColor, int gameID) throws ResponseException{
         try{
             GameData gameData = gameDAO.getGame(gameID);

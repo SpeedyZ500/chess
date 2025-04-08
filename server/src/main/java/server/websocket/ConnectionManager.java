@@ -24,10 +24,15 @@ public class ConnectionManager {
         sessionsByGame.get(gameID).add(connection);
     }
 
-    public void remove(int gameID, Connection connection) {
+    public void remove(int gameID, Session session, String username) {
         List<Connection> connections = sessionsByGame.get(gameID);
         if (connections != null){
-            connections.remove(connection);
+            for(Connection connection : connections){
+                if(connection.getSession().equals(session) && connection.getUsername().equals(username)){
+                    connections.remove(connection);
+                    break;
+                }
+            }
             if(connections.isEmpty()){
                 sessionsByGame.remove(gameID);
             }
