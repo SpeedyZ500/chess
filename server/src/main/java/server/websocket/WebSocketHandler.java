@@ -5,20 +5,22 @@ import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.GameData;
-import model.UserData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import service.GameService;
 import service.UserService;
 import websocket.commands.*;
 import websocket.messages.ErrorMessage;
-import websocket.messages.ServerMessage;
+import websocket.messages.NotificationMessage;
 
 import java.io.IOException;
 
+@WebSocket
 public class WebSocketHandler {
     private final GameService gameService;
     private final UserService userService;
+    private final ConnectionManager connectionManager = new ConnectionManager();
 
     public WebSocketHandler(GameService gameService, UserService userService){
         this.gameService = gameService;
@@ -43,16 +45,29 @@ public class WebSocketHandler {
                 case LEAVE -> handleLeve(session, message);
                 case MAKE_MOVE -> handleMakeMove(session, message);
                 case RESIGN -> handleResign(session, message);
+                default -> sendError(session, "Error: Missing command type");
             }
         } catch (ResponseException | InvalidMoveException e) {
             sendError(session, e.getMessage());
         }
     }
 
-    private void handleConnect(Session session, String message) {
+    private void handleConnect(Session session, String message) throws ResponseException, IOException {
         ConnectCommand command = new Gson().fromJson(message, ConnectCommand.class);
-
-
+        String username = userService.getUsername(command.getAuthToken());
+        int gameID = command.getGameID();
+        GameData gameData = gameService.getGame(gameID);
+        connectionManager.add(gameID, new Connection(session, username));
+        String as = "an Observer";
+        if(username.equals(gameData.whiteUsername())){
+            as = "White Player";
+        }
+        else if(username.equals(gameData.blackUsername())){
+            as = "Black Player";
+        }
+        NotificationMessage notification = new NotificationMessage(String.format("%s joined the game as %s"
+                , username, as));
+        connectionManager.broadcast(gameID,username, notification);
     }
 
     private void handleLeve(Session session, String message){

@@ -13,10 +13,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
-public class GameSessionManager {
+public class ConnectionManager {
     private final Map<Integer, List<Connection>> sessionsByGame = new ConcurrentHashMap<>();
     private final Gson gson = new Gson();
-
+    public ConnectionManager(){}
     public void add(int gameID, Connection connection){
         if(!sessionsByGame.containsKey(gameID)){
             sessionsByGame.put(gameID, new CopyOnWriteArrayList<>());
