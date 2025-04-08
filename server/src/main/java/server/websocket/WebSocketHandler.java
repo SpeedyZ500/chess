@@ -1,9 +1,11 @@
 package server.websocket;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import exception.ResponseException;
+import gson.GsonConfig;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -12,6 +14,7 @@ import service.GameService;
 import service.UserService;
 import websocket.commands.*;
 import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 
 import java.io.IOException;
@@ -21,6 +24,7 @@ public class WebSocketHandler {
     private final GameService gameService;
     private final UserService userService;
     private final ConnectionManager connectionManager = new ConnectionManager();
+    private static final Gson GSON = GsonConfig.createGson();;
 
     public WebSocketHandler(GameService gameService, UserService userService){
         this.gameService = gameService;
@@ -30,7 +34,7 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
-        UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+        UserGameCommand command = GSON.fromJson(message, UserGameCommand.class);
         try{
             if(!userService.verifyToken(command.getAuthToken())){
                 sendError(session, "Error: Invalid Token");
@@ -53,11 +57,13 @@ public class WebSocketHandler {
     }
 
     private void handleConnect(Session session, String message) throws ResponseException, IOException {
-        ConnectCommand command = new Gson().fromJson(message, ConnectCommand.class);
+        ConnectCommand command = GSON.fromJson(message, ConnectCommand.class);
         String username = userService.getUsername(command.getAuthToken());
         int gameID = command.getGameID();
         GameData gameData = gameService.getGame(gameID);
         connectionManager.add(gameID, new Connection(session, username));
+        LoadGameMessage loadGame = new LoadGameMessage(gameData.game());
+        session.getRemote().sendString(GSON.toJson(loadGame));
         String as = "an Observer";
         if(username.equals(gameData.whiteUsername())){
             as = "White Player";
@@ -71,12 +77,12 @@ public class WebSocketHandler {
     }
 
     private void handleLeve(Session session, String message){
-        LeaveCommand command = new Gson().fromJson(message, LeaveCommand.class);
+        LeaveCommand command = GSON.fromJson(message, LeaveCommand.class);
 
     }
 
-    private void handleMakeMove(Session session, String message) throws InvalidMoveException, ResponseException{
-        MakeMoveCommand command = new Gson().fromJson(message, MakeMoveCommand.class);
+    private void handleMakeMove(Session session, String message) throws InvalidMoveException, ResponseException, IOException {
+        MakeMoveCommand command = GSON.fromJson(message, MakeMoveCommand.class);
         String authToken = command.getAuthToken();
         GameData gameData = gameService.getGame(command.getGameID());
         String username = userService.getUsername(authToken);
@@ -86,7 +92,8 @@ public class WebSocketHandler {
         if( (currentTurn == ChessGame.TeamColor.WHITE && username.equals(gameData.whiteUsername()) )
             || (currentTurn == ChessGame.TeamColor.BLACK && username.equals(gameData.blackUsername()))
         ){
-            game.makeMove(command.getMove());
+            ChessMove move = command.getMove();
+            game.makeMove(move);
             gameData = new GameData(
                     gameData.gameID(),
                     gameData.whiteUsername(),
@@ -95,19 +102,66 @@ public class WebSocketHandler {
                     game
             );
             gameService.updateGame(gameData);
+            LoadGameMessage loadGame = new LoadGameMessage(gameData.game());
+            connectionManager.broadcast(gameData.gameID(), null, loadGame);
+            NotificationMessage moveNotification = new NotificationMessage(
+                    String.format("%s, moved from %s, to %s, it is now %s's turn",
+                            username,
+                            move.getStartPosition().prettyOutput(),
+                            move.getEndPosition().prettyOutput(),
+                            game.getTeamTurn()
+                    )
+            );
+            connectionManager.broadcast(gameData.gameID(), username, moveNotification);
+            if(game.isInCheckmate(ChessGame.TeamColor.WHITE)){
+                NotificationMessage checkMateNotification = new NotificationMessage(
+                        String.format("""
+                                %s (The White Player) is in CheckMate, and has lost the game.
+                                %s (The Black Player) has won the game!
+                                """, gameData.whiteUsername(), gameData.blackUsername())
+                );
+                connectionManager.broadcast(gameData.gameID(), null, checkMateNotification);
+            }
+            else if(game.isInCheckmate(ChessGame.TeamColor.BLACK)){
+                NotificationMessage checkMateNotification = new NotificationMessage(
+                        String.format("""
+                                %s (The Black Player) is in CheckMate, and has lost the game.
+                                %s (The White Player) has won the game!
+                                """, gameData.blackUsername(), gameData.whiteUsername())
+                );
+                connectionManager.broadcast(gameData.gameID(), null, checkMateNotification);
+            }
+            else if(game.isInCheck(ChessGame.TeamColor.WHITE)){
+                NotificationMessage checkNotification = new NotificationMessage(
+                        String.format("%s (The White Player) is in check", gameData.whiteUsername())
+                );
+                connectionManager.broadcast(gameData.gameID(), null, checkNotification);
+
+            }
+            else if(game.isInCheck(ChessGame.TeamColor.BLACK)){
+                NotificationMessage checkNotification = new NotificationMessage(
+                        String.format("%s (The Black Player) is in check", gameData.blackUsername())
+                );
+                connectionManager.broadcast(gameData.gameID(), null, checkNotification);
+            }
+            else if(game.isInStalemate(game.getTeamTurn())){
+                NotificationMessage stalemateNotification = new NotificationMessage(
+                        "Stalemate, there are no more valid moves, and no one is in check, Game Ends in a draw."
+                );
+                connectionManager.broadcast(gameData.gameID(), null, stalemateNotification);
+            }
         }
         else{
             throw new InvalidMoveException("Error: it is not your turn or you are not a player");
         }
-
     }
     private void handleResign(Session session, String message){
-        ResignCommand command = new Gson().fromJson(message, ResignCommand.class);
+        ResignCommand command = GSON.fromJson(message, ResignCommand.class);
 
     }
 
     private void sendError(Session session, String errorMessage) throws IOException {
         ErrorMessage error = new ErrorMessage(errorMessage);
-        session.getRemote().sendString(new Gson().toJson(error,ErrorMessage.class));
+        session.getRemote().sendString(GSON.toJson(error,ErrorMessage.class));
     }
 }
