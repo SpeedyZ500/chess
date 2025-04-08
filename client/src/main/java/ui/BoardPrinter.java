@@ -9,8 +9,8 @@ public class BoardPrinter {
     private static final String[] FILES = {EMPTY, " h ", " g ", " f ", " e ", " d ", " c ", " b ", " a ", EMPTY};
     private ChessGame game;
 
-    public BoardPrinter(ChessGame game){
-        this.game = game;
+    public BoardPrinter(){
+        this.game = new ChessGame();
     }
     public void updateGame(ChessGame game){
         this.game = game;

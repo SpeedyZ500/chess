@@ -10,6 +10,7 @@ import client.ServerFacade;
 import static ui.EscapeSequences.*;
 
 public class GameplayClient implements Client{
+    private final BoardPrinter boardPrinter = new BoardPrinter();
     private final String serverUrl;
     private final NotificationHandler notifier;
     private final WebSocketFacade webSocket;
@@ -17,7 +18,6 @@ public class GameplayClient implements Client{
     private final String authToken;
     private final ChessGame.TeamColor team;
     private final int gameID;
-    private final BoardPrinter boardPrinter;
 
     GameplayClient(String serverUrl, NotificationHandler notifier, String username, String authToken, GameData gameData) throws ResponseException {
         this.serverUrl = serverUrl;
@@ -26,8 +26,8 @@ public class GameplayClient implements Client{
         this.username = username;
         this.authToken = authToken;
         this.gameID = gameData.gameID();
-        this.team = gameData.blackUsername().equals(username) ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
-        this.boardPrinter = new BoardPrinter(gameData.game());
+        this.team = username.equals(gameData.blackUsername()) ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+        webSocket.connectToGame(authToken, gameID);
     }
 
     @Override

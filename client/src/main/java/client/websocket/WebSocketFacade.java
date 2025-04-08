@@ -3,6 +3,7 @@ package client.websocket;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import gson.GsonConfig;
+import websocket.commands.ConnectCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
@@ -49,6 +50,16 @@ public class WebSocketFacade extends Endpoint {
     }
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
+
+    }
+
+    public void connectToGame(String authToken, int gameID) throws ResponseException{
+        try{
+            var command = new ConnectCommand(authToken, gameID);
+            this.session.getBasicRemote().sendText(GSON.toJson(command));
+        } catch (IOException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
 
     }
 
