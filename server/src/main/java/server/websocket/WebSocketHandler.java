@@ -65,11 +65,12 @@ public class WebSocketHandler {
         String authToken = command.getAuthToken();
         GameData gameData = gameService.getGame(command.getGameID());
         String username = userService.getUsername(authToken);
-        ChessGame.TeamColor currentTurn = gameData.game().getTeamTurn();
-        if( (currentTurn == ChessGame.TeamColor.WHITE && gameData.whiteUsername() == username)
-            || (currentTurn == ChessGame.TeamColor.BLACK && gameData.blackUsername() == username)
+        ChessGame game = gameData.game();
+        ChessGame.TeamColor currentTurn = game.getTeamTurn();
+
+        if( (currentTurn == ChessGame.TeamColor.WHITE && username.equals(gameData.whiteUsername()) )
+            || (currentTurn == ChessGame.TeamColor.BLACK && username.equals(gameData.blackUsername()))
         ){
-            ChessGame game = gameData.game();
             game.makeMove(command.getMove());
             gameData = new GameData(
                     gameData.gameID(),
@@ -78,6 +79,7 @@ public class WebSocketHandler {
                     gameData.gameName(),
                     game
             );
+            gameService.updateGame(gameData);
         }
         else{
             throw new InvalidMoveException("Error: it is not your turn or you are not a player");
