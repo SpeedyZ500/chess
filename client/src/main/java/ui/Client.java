@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import exception.ResponseException;
 
 public interface Client {
@@ -8,7 +9,7 @@ public interface Client {
     Client transition();
     String terminalState();
     String eval(String input);
-
+    String loadGame(ChessGame game);
 
 
 

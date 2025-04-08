@@ -2,7 +2,9 @@ package client.websocket;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import gson.GsonConfig;
 import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
@@ -14,6 +16,8 @@ import java.net.URISyntaxException;
 public class WebSocketFacade extends Endpoint {
     Session session;
     NotificationHandler notifier;
+    private static final Gson GSON = GsonConfig.createGson();
+
     public WebSocketFacade(String url, NotificationHandler notifier) throws ResponseException{
         try {
             url = url.replace("http", "ws");
@@ -27,16 +31,15 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-
-                    ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
+                    ServerMessage notification = GSON.fromJson(message, ServerMessage.class);
                     if(notification.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION){
-                        notifier.notify(new Gson().fromJson(message, NotificationMessage.class));
+                        notifier.notify(GSON.fromJson(message, NotificationMessage.class));
                     }
                     else if(notification.getServerMessageType() == ServerMessage.ServerMessageType.ERROR){
-                        notifier.warn(new Gson().fromJson(message, ErrorMessage.class));
+                        notifier.warn(GSON.fromJson(message, ErrorMessage.class));
                     }
                     else if(notification.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME){
-
+                        notifier.loadGame(GSON.fromJson(message, LoadGameMessage.class));
                     }
                 }
             });
@@ -48,4 +51,5 @@ public class WebSocketFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
 
     }
+
 }

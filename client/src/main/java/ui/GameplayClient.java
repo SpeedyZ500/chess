@@ -15,7 +15,6 @@ public class GameplayClient implements Client{
     private final WebSocketFacade webSocket;
     private final String username;
     private final String authToken;
-    private ChessGame game;
     private final ChessGame.TeamColor team;
     private final int gameID;
     private final BoardPrinter boardPrinter;
@@ -26,7 +25,6 @@ public class GameplayClient implements Client{
         this.webSocket = new WebSocketFacade(serverUrl, notifier);
         this.username = username;
         this.authToken = authToken;
-        this.game = gameData.game();
         this.gameID = gameData.gameID();
         this.team = gameData.blackUsername().equals(username) ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
         this.boardPrinter = new BoardPrinter(gameData.game());
@@ -34,10 +32,16 @@ public class GameplayClient implements Client{
 
     @Override
     public String eval(String input){
-        if(game == null || gameID < 0){
+        if(gameID < 0){
             return "transition;; How did you get here? You don't even have a game saved.";
         }
         return "transition;; How did you get here? This isn't even implemented yet.";
+    }
+
+    @Override
+    public String loadGame(ChessGame game) {
+        boardPrinter.updateGame(game);
+        return boardPrinter.print(team);
     }
 
     @Override

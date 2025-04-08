@@ -46,6 +46,14 @@ public class PostloginClient implements Client{
             return SET_TEXT_COLOR_RED + ex.getMessage();
         }
     }
+
+    @Override
+    //does nothing here;
+    public String loadGame(ChessGame game) {
+        return "";
+
+    }
+
     public String quit(){
         try{
             server.logout(authToken);

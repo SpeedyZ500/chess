@@ -3,6 +3,7 @@ package ui;
 import client.websocket.NotificationHandler;
 import exception.ResponseException;
 import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
@@ -60,5 +61,12 @@ public class Repl implements NotificationHandler {
         System.out.println("\n" + SET_TEXT_COLOR_RED + error.getErrorMessage());
         printPrompt();
     }
+
+    @Override
+    public void loadGame(LoadGameMessage game){
+        System.out.print(client.loadGame(game.getGame()));
+        printPrompt();
+    }
+
 }
 

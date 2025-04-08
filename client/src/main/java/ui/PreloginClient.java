@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import client.websocket.NotificationHandler;
 import exception.ResponseException;
 import model.AuthData;
@@ -37,6 +38,11 @@ public class PreloginClient implements Client {
         catch (ResponseException ex) {
             return SET_TEXT_COLOR_RED + ex.getMessage();
         }
+    }
+    //does nothing here
+    @Override
+    public String loadGame(ChessGame game) {
+        return "";
     }
 
     String login(String ...params) throws ResponseException{
