@@ -1,5 +1,6 @@
 package ui;
 
+import client.websocket.NotificationHandler;
 import exception.ResponseException;
 import model.AuthData;
 import client.ServerFacade;
@@ -11,15 +12,14 @@ import static ui.EscapeSequences.*;
 
 public class PreloginClient implements Client {
     private final String serverUrl;
+    private final NotificationHandler notifier;
     private final ServerFacade server;
-    public PreloginClient(String serverUrl){
+    public PreloginClient(String serverUrl, NotificationHandler notifier){
         this.serverUrl = serverUrl;
+        this.notifier = notifier;
         this.server = new ServerFacade(serverUrl);
     }
-    public PreloginClient(String serverUrl, ServerFacade server){
-        this.serverUrl = serverUrl;
-        this.server = server;
-    }
+
 
     @Override
     public String eval(String input){
@@ -80,7 +80,7 @@ public class PreloginClient implements Client {
     @Override
     public Client transition(String token) {
         String[] parsed = token.split(",");
-        return new PostloginClient(serverUrl, server, parsed[0].trim(), parsed[1].trim());
+        return new PostloginClient(serverUrl, notifier, parsed[0].trim(), parsed[1].trim());
     }
 
     @Override

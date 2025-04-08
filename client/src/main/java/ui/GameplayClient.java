@@ -1,6 +1,9 @@
 package ui;
 
 import chess.ChessGame;
+import client.websocket.NotificationHandler;
+import client.websocket.WebSocketFacade;
+import exception.ResponseException;
 import model.GameData;
 import client.ServerFacade;
 
@@ -8,7 +11,8 @@ import static ui.EscapeSequences.*;
 
 public class GameplayClient implements Client{
     private final String serverUrl;
-    private final ServerFacade server;
+    private final NotificationHandler notifier;
+    private final WebSocketFacade webSocket;
     private final String username;
     private final String authToken;
     private ChessGame game;
@@ -16,9 +20,10 @@ public class GameplayClient implements Client{
     private final int gameID;
     private final BoardPrinter boardPrinter;
 
-    GameplayClient(String serverUrl, ServerFacade server, String username, String authToken, GameData gameData){
+    GameplayClient(String serverUrl, NotificationHandler notifier, String username, String authToken, GameData gameData) throws ResponseException {
         this.serverUrl = serverUrl;
-        this.server = server;
+        this.notifier = notifier;
+        this.webSocket = new WebSocketFacade(serverUrl, notifier);
         this.username = username;
         this.authToken = authToken;
         this.game = gameData.game();
@@ -63,7 +68,7 @@ public class GameplayClient implements Client{
 
     @Override
     public Client transition() {
-        return new PostloginClient(serverUrl, server, username, authToken);
+        return new PostloginClient(serverUrl, notifier, username, authToken);
     }
 
 

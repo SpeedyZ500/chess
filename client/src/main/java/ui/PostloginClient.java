@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessGame;
+import client.websocket.NotificationHandler;
 import exception.ResponseException;
 import model.GameData;
 import client.ServerFacade;
@@ -12,12 +13,14 @@ import static ui.EscapeSequences.*;
 public class PostloginClient implements Client{
     private final String serverUrl;
     private final ServerFacade server;
+    private final NotificationHandler notifier;
     private final String authToken;
     private final String username;
     List<GameData> games;
-    public PostloginClient(String serverUrl, ServerFacade server, String username, String authToken){
+    public PostloginClient(String serverUrl, NotificationHandler notifier, String username, String authToken){
         this.serverUrl = serverUrl;
-        this.server = server;
+        this.notifier = notifier;
+        this.server = new ServerFacade(serverUrl);
         this.authToken = authToken;
         this.username = username;
         this.games = new ArrayList<>();
@@ -165,8 +168,6 @@ public class PostloginClient implements Client{
 
     public String observe(String ...params) throws ResponseException{
         if(params.length >= 1){
-
-
             GameData game = checkGame(params[0]);
             return String.format("Observing: %s%n%s", game.gameName(), BoardPrinter.print(game.game().getBoard()));
         }
@@ -203,15 +204,15 @@ public class PostloginClient implements Client{
     }
 
     @Override
-    public Client transition(String token) {
+    public Client transition(String token) throws ResponseException {
         int gameIndex = Integer.parseInt(token);
         GameData game = games.get(gameIndex);
-        return new GameplayClient(serverUrl, server, username, authToken, game);
+        return new GameplayClient(serverUrl, notifier, username, authToken, game);
     }
 
     @Override
     public Client transition() {
-        return new PreloginClient(serverUrl, server);
+        return new PreloginClient(serverUrl, notifier);
     }
 
     @Override
