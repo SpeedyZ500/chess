@@ -104,14 +104,14 @@ public class WebSocketHandler {
         String username = userService.getUsername(authToken);
         ChessGame game = gameData.game();
         ChessGame.TeamColor currentTurn = game.getTeamTurn();
-        if(currentTurn == null){
+        if(game.isGameOver()){
             sendError(session, "Error: cannot make move, the game is over");
         }
         else if( (currentTurn == ChessGame.TeamColor.WHITE && username.equals(gameData.whiteUsername()) )
             || (currentTurn == ChessGame.TeamColor.BLACK && username.equals(gameData.blackUsername()))
         ){
             ChessMove move = command.getMove();
-            game.makeMove(move);
+            gameData.game().makeMove(move);
             gameData = new GameData(
                     gameData.gameID(),
                     gameData.whiteUsername(),
@@ -173,9 +173,33 @@ public class WebSocketHandler {
             throw new InvalidMoveException("Error: it is not your turn or you are not a player");
         }
     }
-    private void handleResign(Session session, String message){
+    private void handleResign(Session session, String message) throws ResponseException, IOException {
         ResignCommand command = GSON.fromJson(message, ResignCommand.class);
+        String username = userService.getUsername(command.getAuthToken());
+        GameData gameData = gameService.getGame(command.getGameID());
 
+        if(!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())){
+            sendError(session, "Error: Only Players can resign");
+            return;
+        }
+        ChessGame game = gameData.game();
+        if(game.isGameOver()){
+            sendError(session, "Error: Game is already over, and you cannot resign");
+            return;
+        }
+        game.setGameOver(true);
+        gameData = new GameData(
+                gameData.gameID(),
+                gameData.whiteUsername(),
+                gameData.blackUsername(),
+                gameData.gameName(),
+                game
+        );
+        gameService.updateGame(gameData);
+        NotificationMessage notification = new NotificationMessage(
+                String.format("%s has resigned.", username)
+        );
+        connectionManager.broadcast(command.getGameID(), null, notification);
     }
 
     private void sendError(Session session, String errorMessage) throws IOException {

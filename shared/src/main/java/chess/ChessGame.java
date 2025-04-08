@@ -11,11 +11,20 @@ import java.util.*;
 public class ChessGame {
     private TeamColor turn;
     private ChessBoard board = new ChessBoard();
+    private boolean gameOver;
 
 
     public ChessGame() {
         this.turn = TeamColor.WHITE;
         this.board.resetBoard();
+        this.gameOver = false;
+    }
+    public void setGameOver(boolean gameOver){
+        this.gameOver = gameOver;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 
     @Override
@@ -93,7 +102,7 @@ public class ChessGame {
         if(turn == TeamColor.WHITE){
             turn = TeamColor.BLACK;
         }
-        else{
+        else if (turn == TeamColor.BLACK){
             turn = TeamColor.WHITE;
 
         }
@@ -156,6 +165,7 @@ public class ChessGame {
         return "ChessGame{" +
                 "turn=" + turn +
                 ", board=" + board +
+                ", gameOver=" + gameOver +
                 '}';
     }
 }
