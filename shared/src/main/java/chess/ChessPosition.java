@@ -40,8 +40,7 @@ public class ChessPosition {
     }
 
     public String prettyOutput(){
-        char[] colRep = {'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'};
-        return String.format("%c%d",colRep[col - 1], row);
+        return String.format("%c%d",'a' + (col - 1), row);
     }
 
     /**

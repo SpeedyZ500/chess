@@ -121,20 +121,7 @@ public class PostloginClient implements Client{
             if("WHITE".equalsIgnoreCase(params[1].trim()) && !username.equals(game.whiteUsername()) ||
                     "BLACK".equalsIgnoreCase(params[1].trim()) && !username.equals(game.blackUsername())){
                 server.joinGame(params[1], game.gameID(), authToken);
-                return String.format(
-                        """
-                            Successfully joined: %s. %s However, %s the Gameplay aspect has yet to be implemented.
-                            Instead enjoy this lovely recreation of the board, from the perspective you would have in game.
-                            %s
-                        """,
-                        game.gameName(),
-                        SET_TEXT_ITALIC,
-                        RESET_TEXT_ITALIC,
-                        BoardPrinter.print(
-                                ChessGame.TeamColor.valueOf(params[1].trim().toUpperCase()),
-                                game.game().getBoard()
-                        )
-                );
+                return String.format("transition ;; %d ;; Joining the Game", game.gameID());
             }
             else{
                 return BoardPrinter.print(

@@ -27,6 +27,7 @@ public class Repl implements NotificationHandler {
             String line = scanner.nextLine();
             result = client.eval(line);
             String[] splitResult = result.split(";;");
+            System.out.print(splitResult[splitResult.length -1]);
             if(splitResult[0].trim().equalsIgnoreCase("transition")){
                 if(splitResult.length >= 3){
                     try{
@@ -41,7 +42,6 @@ public class Repl implements NotificationHandler {
                     client = client.transition();
                 }
             }
-            System.out.print(splitResult[splitResult.length -1]);
 
         }
     }

@@ -2,6 +2,8 @@ package ui;
 
 import chess.*;
 
+import java.util.*;
+
 import static ui.EscapeSequences.*;
 
 public class BoardPrinter {
@@ -11,6 +13,9 @@ public class BoardPrinter {
 
     public BoardPrinter(){
         this.game = new ChessGame();
+    }
+    public ChessBoard getBoard(){
+        return this.game.getBoard();
     }
     public void updateGame(ChessGame game){
         this.game = game;
@@ -29,7 +34,18 @@ public class BoardPrinter {
         return print(team, board);
     }
 
-    public static String print(ChessGame.TeamColor team, ChessBoard board){
+    public String highlightValidMoves(ChessGame.TeamColor team, ChessPosition selected){
+        Iterator<ChessMove> iter = game.validMoves(selected).iterator();
+        List<ChessPosition> highlightPositions = new ArrayList<>();
+        while(iter.hasNext()){
+            ChessMove move = iter.next();
+            highlightPositions.add(move.getEndPosition());
+        }
+        return print(team, game.getBoard(), selected, highlightPositions);
+    }
+
+    private static String print(ChessGame.TeamColor team, ChessBoard board,
+                                ChessPosition selected, Collection<ChessPosition> highlightPositions){
         int direction = team == ChessGame.TeamColor.WHITE ? -1 : 1;
         int startingPosition = team == ChessGame.TeamColor.WHITE ? 9 : 0;
 
@@ -50,6 +66,12 @@ public class BoardPrinter {
                     if(positionCheck.equals(lastMoveStart) || positionCheck.equals(lastMoveEnd)){
                         output.append(SET_BG_COLOR_MAGENTA);
                     }
+                    else if(positionCheck.equals(selected)){
+                        output.append(SET_BG_COLOR_YELLOW);
+                    }
+                    else if(highlightPositions.contains(positionCheck)){
+                        output.append(SET_BG_COLOR_GREEN);
+                    }
                     else if((rank + file) % 2 == 0){
                         output.append(SET_BG_COLOR_LIGHT_GREY);
                     }
@@ -64,6 +86,10 @@ public class BoardPrinter {
         }
         output.append(RESET);
         return output.toString();
+    }
+
+    public static String print(ChessGame.TeamColor team, ChessBoard board){
+        return print(team, board, null, Collections.emptyList());
     }
 
     private static String displayPiece(ChessPiece piece){
