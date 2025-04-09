@@ -102,22 +102,22 @@ public class BoardPrinter {
         }
         return switch(piece.getPieceType()){
             case KING -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_WHITE + WHITE_KING :
+                    SET_TEXT_COLOR_RED + WHITE_KING :
                     SET_TEXT_COLOR_BLUE + BLACK_KING;
             case PAWN -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_WHITE + WHITE_PAWN :
+                    SET_TEXT_COLOR_RED + WHITE_PAWN :
                     SET_TEXT_COLOR_BLUE + BLACK_PAWN;
             case ROOK -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_WHITE + WHITE_ROOK :
+                    SET_TEXT_COLOR_RED + WHITE_ROOK :
                     SET_TEXT_COLOR_BLUE + BLACK_ROOK;
             case BISHOP -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_WHITE + WHITE_BISHOP :
+                    SET_TEXT_COLOR_RED + WHITE_BISHOP :
                     SET_TEXT_COLOR_BLUE + BLACK_BISHOP;
             case KNIGHT -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_WHITE + WHITE_KNIGHT :
+                    SET_TEXT_COLOR_RED + WHITE_KNIGHT :
                     SET_TEXT_COLOR_BLUE + BLACK_KNIGHT;
             case QUEEN -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ?
-                    SET_TEXT_COLOR_WHITE + WHITE_QUEEN :
+                    SET_TEXT_COLOR_RED + WHITE_QUEEN :
                     SET_TEXT_COLOR_BLUE + BLACK_QUEEN;
             default -> EMPTY;
         };
