@@ -62,8 +62,8 @@ public class ChessBoard {
      *
      * @return history.iterator() to iterate through history
      */
-    public Iterator<ChessPosition> history(){
-        return history.iterator();
+    public Collection<ChessPosition> history(){
+        return history;
     }
 
 

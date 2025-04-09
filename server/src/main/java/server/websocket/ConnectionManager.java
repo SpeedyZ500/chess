@@ -39,7 +39,7 @@ public class ConnectionManager {
             }
         }
     }
-    
+
 
     public void broadcast(int gameID, String excludeUsername, ServerMessage message) throws IOException {
         List<Connection> connections = sessionsByGame.get(gameID);

@@ -54,23 +54,12 @@ public class KingMovesCalculator implements ChessMovesCalculator {
                 if(!pathOpen){
                     continue;
                 }
-                boolean rookMoved = false;
-                boolean kingMoved = false;
-                Iterator<ChessPosition> hist = board.history();
-                while(hist.hasNext()){
-                    ChessPosition check = hist.next();
+                Collection<ChessPosition> history = board.history();
 
-                    if(kingStart.equals(check)){
-                        kingMoved = true;
-                    }
-                    if(rookPosition.equals(check)){
-                        rookMoved = true;
-                    }
-                }
-                if(kingMoved){
+                if(history.contains(kingStart)){
                     break;
                 }
-                if(rookMoved){
+                if(history.contains(rookPosition)){
                     continue;
                 }
                 moves.add(new ChessMove(position, endPosition, null));
