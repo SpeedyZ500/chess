@@ -58,40 +58,29 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void connectToGame(String authToken, int gameID) throws ResponseException{
-        try{
-            ConnectCommand command = new ConnectCommand(authToken, gameID);
-            this.session.getBasicRemote().sendText(GSON.toJson(command));
-        } catch (IOException e) {
-            throw new ResponseException(500, e.getMessage());
-        }
-
+        ConnectCommand command = new ConnectCommand(authToken, gameID);
+        sendMessage(GSON.toJson(command));
     }
 
     public void leaveGame(String authToken, int gameID) throws ResponseException{
+        LeaveCommand command = new LeaveCommand(authToken, gameID);
+        sendMessage(GSON.toJson(command));
+    }
+    private void sendMessage(String message) throws ResponseException {
         try{
-            LeaveCommand command = new LeaveCommand(authToken, gameID);
-            this.session.getBasicRemote().sendText(GSON.toJson(command));
+            this.session.getBasicRemote().sendText(message);
         } catch (IOException e) {
             throw new ResponseException(500, e.getMessage());
         }
     }
-
     public void makeMove(String authToken, int gameID, ChessMove move) throws ResponseException{
-        try{
-            MakeMoveCommand command = new MakeMoveCommand(authToken, gameID, move);
-            this.session.getBasicRemote().sendText(GSON.toJson(command));
-        } catch (IOException e) {
-            throw new ResponseException(500, e.getMessage());
-        }
+        MakeMoveCommand command = new MakeMoveCommand(authToken, gameID, move);
+        sendMessage(GSON.toJson(command));
     }
 
     public void resign(String authToken, int gameID) throws ResponseException{
-        try{
-            ResignCommand command = new ResignCommand(authToken, gameID);
-            this.session.getBasicRemote().sendText(GSON.toJson(command));
-        } catch (IOException e) {
-            throw new ResponseException(500, e.getMessage());
-        }
+        ConnectCommand command = new ConnectCommand(authToken, gameID);
+        sendMessage(GSON.toJson(command));
     }
 
 }
