@@ -125,8 +125,11 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-
-        return new ChessCheckCalculator(board).isInCheckmate(teamColor);
+        boolean checkmate = new ChessCheckCalculator(board).isInCheckmate(teamColor);
+        if(checkmate){
+            gameOver = true;
+        }
+        return checkmate;
     }
 
     /**
@@ -137,7 +140,11 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return new ChessCheckCalculator(board).isInStalemate(teamColor);
+        boolean stalemate = new ChessCheckCalculator(board).isInStalemate(teamColor);
+        if(stalemate){
+            gameOver = true;
+        }
+        return stalemate;
     }
 
     /**

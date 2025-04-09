@@ -79,7 +79,7 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void resign(String authToken, int gameID) throws ResponseException{
-        ConnectCommand command = new ConnectCommand(authToken, gameID);
+        ResignCommand command = new ResignCommand(authToken, gameID);
         sendMessage(GSON.toJson(command));
     }
 

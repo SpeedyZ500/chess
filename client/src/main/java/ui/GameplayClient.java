@@ -22,6 +22,7 @@ public class GameplayClient implements Client{
     private final String username;
     private final String authToken;
     private final ChessGame.TeamColor team;
+    private final Boolean isPlayer;
     private final int gameID;
 
     GameplayClient(
@@ -34,6 +35,7 @@ public class GameplayClient implements Client{
         this.username = username;
         this.authToken = authToken;
         this.gameID = gameData.gameID();
+        this.isPlayer = !joinedAs.equalsIgnoreCase("observer");
         this.team = joinedAs.equalsIgnoreCase("BLACK") ? ChessGame.TeamColor.BLACK :
                 ChessGame.TeamColor.WHITE;
         webSocket.connectToGame(authToken, gameID);
@@ -77,20 +79,23 @@ public class GameplayClient implements Client{
     }
 
     private String makeMove(String ...params) throws ResponseException{
+        if(!isPlayer){
+            throw new ResponseException(400, "Error: Only Players can preform this Action");
+        }
         if(params.length >= 2){
             ChessPosition from = convertToPosition(params[0]);
             ChessPosition to = convertToPosition(params[1]);
             ChessPiece.PieceType promotion = null;
             if(params.length >= 3){
                 try{
-                    promotion = ChessPiece.PieceType.valueOf(params[3].toUpperCase());
+                    promotion = ChessPiece.PieceType.valueOf(params[2].trim().toUpperCase());
                 } catch (IllegalArgumentException e) {
                     throw new ResponseException(400, "Expected: <PROMOTION> ex: knight");
                 }
             }
             ChessMove move = new ChessMove(from, to, promotion);
             webSocket.makeMove(authToken, gameID, move);
-            return String.format("Successfully moved from %s to %s", from, to);
+            return String.format("Moving from %s to %s", from.prettyOutput(), to.prettyOutput());
         }
         else{
             throw new ResponseException(400, "Expected: <FROM> <TO> please provide coordinates (ex: 'c3 d5')");
@@ -108,6 +113,9 @@ public class GameplayClient implements Client{
     }
 
     private String resign() throws ResponseException {
+        if(!isPlayer){
+            throw new ResponseException(400, "Error: Only Players can preform this Action");
+        }
         System.out.println("Are you sure you want to resign yes/no");
         Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
