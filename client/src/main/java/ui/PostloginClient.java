@@ -115,20 +115,17 @@ public class PostloginClient implements Client{
         if (params.length >= 2) {
             GameData game = checkGame(params[0]);
             Set<String> validColors = Set.of("WHITE", "BLACK");
+            int gameIndex = games.indexOf(game);
             if(!validColors.contains(params[1].trim().toUpperCase())){
                 throw new ResponseException(400, "Expected: [WHITE|BLACK]");
             }
             if("WHITE".equalsIgnoreCase(params[1].trim()) && !username.equals(game.whiteUsername()) ||
                     "BLACK".equalsIgnoreCase(params[1].trim()) && !username.equals(game.blackUsername())){
                 server.joinGame(params[1], game.gameID(), authToken);
-                return String.format("transition ;; %d ;; Joining the Game", game.gameID());
+                return String.format("transition ;; %d, %s ;; Joining the Game", gameIndex, params[1].trim());
             }
-            else{
-                return BoardPrinter.print(
-                        ChessGame.TeamColor.valueOf(params[1].trim().toUpperCase()),
-                        game.game().getBoard()
-                );
-
+            else {
+                return String.format("transition ;; %d ;; Joining the Game", gameIndex);
             }
 
         }
@@ -164,7 +161,8 @@ public class PostloginClient implements Client{
     public String observe(String ...params) throws ResponseException{
         if(params.length >= 1){
             GameData game = checkGame(params[0]);
-            return String.format("Observing: %s%n%s", game.gameName(), BoardPrinter.print(game.game().getBoard()));
+            int gameIndex = games.indexOf(game);
+            return String.format("transition ;; %d, observer ;; Observing the game", gameIndex);
         }
         else{
             throw new ResponseException(400, "Expected: <ID>");
@@ -200,9 +198,11 @@ public class PostloginClient implements Client{
 
     @Override
     public Client transition(String token) throws ResponseException {
-        int gameIndex = Integer.parseInt(token);
+        String[] parsed = token.split(",");
+
+        int gameIndex = Integer.parseInt(parsed[0].trim());
         GameData game = games.get(gameIndex);
-        return new GameplayClient(serverUrl, notifier, username, authToken, game);
+        return new GameplayClient(serverUrl, notifier, username, authToken, game, parsed[1].trim());
     }
 
     @Override

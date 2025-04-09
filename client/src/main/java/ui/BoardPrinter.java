@@ -1,6 +1,7 @@
 package ui;
 
 import chess.*;
+import exception.ResponseException;
 
 import java.util.*;
 
@@ -34,7 +35,10 @@ public class BoardPrinter {
         return print(team, board);
     }
 
-    public String highlightValidMoves(ChessGame.TeamColor team, ChessPosition selected){
+    public String highlightValidMoves(ChessGame.TeamColor team, ChessPosition selected) throws ResponseException{
+        if(game.getBoard().outOfBounds(selected)){
+            throw new ResponseException(400, String.format("Position %s out of bounds",selected.prettyOutput()));
+        }
         Iterator<ChessMove> iter = game.validMoves(selected).iterator();
         List<ChessPosition> highlightPositions = new ArrayList<>();
         while(iter.hasNext()){
@@ -61,7 +65,7 @@ public class BoardPrinter {
                 else{
                     ChessMove lastMove = board.getLastMove();
                     ChessPosition lastMoveStart = lastMove != null ? lastMove.getStartPosition() : null;
-                    ChessPosition lastMoveEnd = lastMove != null ? lastMove.getStartPosition() : null;
+                    ChessPosition lastMoveEnd = lastMove != null ? lastMove.getEndPosition() : null;
                     ChessPosition positionCheck = new ChessPosition(rank,  9 - file);
                     if(positionCheck.equals(lastMoveStart) || positionCheck.equals(lastMoveEnd)){
                         output.append(SET_BG_COLOR_MAGENTA);

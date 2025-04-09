@@ -1,6 +1,7 @@
 package server.websocket;
 
 import com.google.gson.Gson;
+import gson.GsonConfig;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
 
@@ -15,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConnectionManager {
     private final Map<Integer, List<Connection>> sessionsByGame = new ConcurrentHashMap<>();
-    private final Gson gson = new Gson();
+    private static final Gson GSON = GsonConfig.createGson();;
     public ConnectionManager(){}
     public void add(int gameID, Connection connection){
         if(!sessionsByGame.containsKey(gameID)){
@@ -53,7 +54,7 @@ public class ConnectionManager {
 
             if (session.isOpen()) {
                 if (!username.equals(excludeUsername)) {
-                    c.send(gson.toJson(message));
+                    c.send(GSON.toJson(message));
                 }
             } else {
                 removeList.add(c);

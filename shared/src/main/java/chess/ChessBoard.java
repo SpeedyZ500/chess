@@ -9,7 +9,7 @@ import java.util.*;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private final List<ChessBoard> history;
+    private final Set<ChessPosition> history;
     private ChessMove lastMove = null;
 
     private final Map<ChessPosition, ChessPiece> board;
@@ -17,14 +17,14 @@ public class ChessBoard {
 
 
     public ChessBoard() {
-        this.history = new ArrayList<>();
+        this.history = new HashSet<>();
         this.board = new HashMap<>();
     }
 
 
     public ChessBoard(Map<ChessPosition, ChessPiece> board){
         this.board = board;
-        this.history = new ArrayList<>();
+        this.history = new HashSet<>();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ChessBoard {
      *
      * @return history.iterator() to iterate through history
      */
-    public Iterator<ChessBoard> history(){
+    public Iterator<ChessPosition> history(){
         return history.iterator();
     }
 
@@ -155,9 +155,13 @@ public class ChessBoard {
         while(iter.hasNext()){
             prev.addPiece(iter.next());
         }
-        history.add(prev);
-        ChessPiece thisPiece = getPiece(startPosition);
 
+        //history.add(prev);
+        ChessPiece thisPiece = getPiece(startPosition);
+        if(thisPiece.getPieceType() == ChessPiece.PieceType.ROOK ||
+                thisPiece.getPieceType() == ChessPiece.PieceType.KING){
+            history.add(startPosition);
+        }
         int endCol = endPosition.getColumn();
         int startCol = startPosition.getColumn();
         int file = endCol - startCol;

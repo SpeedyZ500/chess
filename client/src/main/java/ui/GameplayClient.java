@@ -24,14 +24,18 @@ public class GameplayClient implements Client{
     private final ChessGame.TeamColor team;
     private final int gameID;
 
-    GameplayClient(String serverUrl, NotificationHandler notifier, String username, String authToken, GameData gameData) throws ResponseException {
+    GameplayClient(
+            String serverUrl, NotificationHandler notifier, String username, String authToken, GameData gameData,
+            String joinedAs
+    ) throws ResponseException {
         this.serverUrl = serverUrl;
         this.notifier = notifier;
         this.webSocket = new WebSocketFacade(serverUrl, notifier);
         this.username = username;
         this.authToken = authToken;
         this.gameID = gameData.gameID();
-        this.team = username.equals(gameData.blackUsername()) ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+        this.team = joinedAs.equalsIgnoreCase("BLACK") ? ChessGame.TeamColor.BLACK :
+                ChessGame.TeamColor.WHITE;
         webSocket.connectToGame(authToken, gameID);
     }
 
@@ -61,7 +65,7 @@ public class GameplayClient implements Client{
         if(position.length() < 2 || !position.matches("[a-h][1-8]")){
             throw new ResponseException(400, "Ensure that your positions are in File Rank format i.e. h5");
         }
-        return new ChessPosition(position.charAt(1) - '0', position.charAt(1) - ('a' -1));
+        return new ChessPosition(position.charAt(1)-'0', position.charAt(0) - ('a'-1));
     }
     private String highlightValidMoves(String ...params) throws ResponseException {
         if(params.length >= 1){
@@ -132,7 +136,6 @@ public class GameplayClient implements Client{
                     %s resign %s - the game (you lose/forfeit and cannot continue) %s Players Only %s
                     %s highlight <POSITION> %s - highlight all legal moves for a given piece (fileRank i.e. a2)
                     %s move <FROM> <TO> <PROMOTION> %s - Make a Move, %s Players Only %s, <PROMOTION> for pawn promotion
-                    %s quit %s - playing chess
                     %s help %s - with commands
                 """,
                 SET_TEXT_COLOR_BLUE, SET_TEXT_COLOR_YELLOW,
